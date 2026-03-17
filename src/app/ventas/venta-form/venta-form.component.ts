@@ -30,10 +30,14 @@ export class VentaFormComponent implements OnInit {
 
   ngOnInit(): void {
     const s = this.sale;
+    
+    // Formatear fechas de Laravel ISO(YYYY-MM-DDTHH:MM:SS.000000Z) a YYYY-MM-DD para <input type="date">
+    const formatDt = (dt?: string) => dt ? dt.split('T')[0] : this.today;
+
     this.form = this.fb.group({
       store_id:            [s?.store_id ?? '',   Validators.required],
-      sale_date:           [s?.sale_date ?? this.today, Validators.required],
-      registration_date:   [s?.registration_date ?? this.today, Validators.required],
+      sale_date:           [formatDt(s?.sale_date), Validators.required],
+      registration_date:   [formatDt(s?.registration_date), Validators.required],
       prefix:              [s?.prefix ?? '',     Validators.required],
       doc_number:          [s?.doc_number ?? '', Validators.required],
       client:              [s?.client ?? 'VARIOS', Validators.required],
