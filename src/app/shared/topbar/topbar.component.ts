@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,6 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./topbar.component.scss'],
 })
 export class TopbarComponent {
+  @Output() toggleSidebar = new EventEmitter<void>();
   pageTitle = 'Dashboard';
   selectedYear = new Date().getFullYear();
   years = Array.from({ length: 5 }, (_, i) => this.selectedYear - i);

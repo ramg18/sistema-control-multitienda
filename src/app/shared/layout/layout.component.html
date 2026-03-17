@@ -1,7 +1,7 @@
-<app-sidebar></app-sidebar>
+<app-sidebar [isOpen]="isSidebarOpen" (close)="isSidebarOpen = false"></app-sidebar>
 <div class="app-content">
-  <app-topbar></app-topbar>
-  <main class="page-content">
+  <app-topbar (toggleSidebar)="isSidebarOpen = !isSidebarOpen"></app-topbar>
+  <main class="page-content" (click)="isSidebarOpen = false">
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -521,3 +521,136 @@ select.form-control { cursor: pointer; }
 .align-center { align-items: center; }
 .justify-between { justify-content: space-between; }
 .flex-wrap { flex-wrap: wrap; }
+
+/* ── Pantallas Responsivas (Responsive Design & Mobile) ───────── */
+.mobile-menu-btn { display: none; }
+
+@media (max-width: 1024px) {
+  /* Layout Base */
+  .app-content {
+    margin-left: 0;
+  }
+  
+  .page-content {
+    padding: 16px 12px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  /* Si el sidebar obtiene la clase .open (opcional para JS) */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Encabezados de página apilados */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    
+    .btn { width: 100%; justify-content: center; }
+  }
+
+  /* Grid de KPIs (1 por fila) */
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Formularios en pantallas pequeñas */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    .filter-control { width: 100%; }
+  }
+
+  /* Data Table a Data Cards (Mobile View) */
+  .data-table-wrap {
+    overflow: hidden;
+    background: transparent;
+  }
+  
+  .data-table {
+    display: block;
+    width: 100%;
+
+    thead {
+      display: none; /* Ocultar cabeceras reales */
+    }
+
+    tbody {
+      display: block;
+      width: 100%;
+    }
+
+    tr {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      padding: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+      &:hover { background: var(--bg-card); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    }
+
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 4px;
+      border-bottom: 1px dotted var(--border);
+      text-align: right;
+      
+      &:last-child { border-bottom: none; justify-content: flex-end; }
+
+      /* Insertar los nombres de columnas como content */
+      &::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        text-align: left;
+        flex-shrink: 0;
+        margin-right: 12px;
+      }
+    }
+  }
+
+  /* Paginación Mobile */
+  .pagination {
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 12px;
+    
+    .page-info { order: -1; }
+    div { display: flex; gap: 8px; width: 100%; }
+    .page-btn { flex: 1; }
+  }
+
+  /* Mostrar botón de menú en móviles */
+  .mobile-menu-btn {
+    display: inline-flex;
+    margin-right: 12px;
+  }
+
+  /* Overlay del menú lateral */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(11, 17, 32, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 51;
+  }
+}

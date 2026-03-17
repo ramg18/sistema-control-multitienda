@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -7,6 +7,9 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+  @Input() isOpen = false;
+  @Output() close = new EventEmitter<void>();
+
   constructor(private auth: AuthService) {}
 
   get isAdmin(): boolean { return this.auth.isAdmin; }
