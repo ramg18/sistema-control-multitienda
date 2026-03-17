@@ -95,7 +95,7 @@ export class VentaFormComponent implements OnInit {
     const rateId = this.form.get('tax_rate_id')?.value;
     if (!rateId) return 0;
     const rate = this.taxRates.find(r => r.id == rateId)?.rate || 0;
-    return total / (1 + rate);
+    return total / (1 + Number(rate));
   }
 
   get calculatedTax(): number {
