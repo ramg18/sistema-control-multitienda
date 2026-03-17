@@ -1,0 +1,84 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Gestión de Usuarios</h2>
+    <p class="page-subtitle">{{ users.length }} usuarios registrados</p>
+  </div>
+  <button class="btn btn-primary" (click)="openForm()">+ Nuevo Usuario</button>
+</div>
+
+<div class="card mb-24" *ngIf="showForm">
+  <div class="card-header">
+    <div class="card-title">{{ editing ? 'Editar Usuario' : 'Nuevo Usuario' }}</div>
+    <button class="btn btn-icon btn-sm" (click)="showForm = false">✕</button>
+  </div>
+  <div class="card-body">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <input type="text" class="form-control" formControlName="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo *</label>
+          <input type="email" class="form-control" formControlName="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña {{ editing ? '(dejar en blanco para no cambiar)' : '*' }}</label>
+          <input type="password" class="form-control" formControlName="password" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Rol *</label>
+          <select class="form-control" formControlName="role">
+            <option *ngFor="let r of roles" [value]="r.v">{{ r.l }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tienda asignada</label>
+          <select class="form-control" formControlName="store_id">
+            <option [value]="null">Sin tienda asignada</option>
+            <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Tienda</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td><strong>{{ u.name }}</strong></td>
+          <td>{{ u.email }}</td>
+          <td>
+            <span class="badge"
+              [class.badge-indigo]="u.role === 'admin'"
+              [class.badge-teal]="u.role === 'store_admin'"
+              [class.badge-amber]="u.role === 'cashier'">
+              {{ u.role === 'admin' ? 'Administrador' : u.role === 'store_admin' ? 'Admin. Tienda' : 'Cajero' }}
+            </span>
+          </td>
+          <td>{{ u.store?.name ?? '—' }}</td>
+          <td>
+            <div class="d-flex gap-12">
+              <button class="btn btn-icon btn-sm" (click)="openForm(u)">✏️</button>
+              <button class="btn btn-icon btn-sm" (click)="delete(u)" style="color:var(--danger)">🗑</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

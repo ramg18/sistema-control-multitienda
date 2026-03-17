@@ -1,0 +1,5 @@
+.pm-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+.pm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.pm-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }

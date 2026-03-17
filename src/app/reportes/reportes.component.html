@@ -1,0 +1,128 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Reportes Consolidados</h2>
+    <p class="page-subtitle">Año fiscal {{ year }}</p>
+  </div>
+  <div class="tab-switcher">
+    <button class="btn" [class.btn-primary]="activeTab === 'ventas'"
+            [class.btn-secondary]="activeTab !== 'ventas'" (click)="activeTab = 'ventas'; load()">
+      Ventas Mensuales
+    </button>
+    <button class="btn" [class.btn-primary]="activeTab === 'bimensual'"
+            [class.btn-secondary]="activeTab !== 'bimensual'" (click)="activeTab = 'bimensual'; load()">
+      Análisis Bimestral
+    </button>
+    <button class="btn" [class.btn-primary]="activeTab === 'compras'"
+            [class.btn-secondary]="activeTab !== 'compras'" (click)="activeTab = 'compras'; load()">
+      Compras
+    </button>
+  </div>
+</div>
+
+<div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+
+<div class="card" *ngIf="!loading">
+  <div class="data-table-wrap">
+    
+    <!-- VENTAS MENSUALES -->
+    <table class="data-table" *ngIf="activeTab === 'ventas'">
+      <thead>
+        <tr>
+          <th>Mes</th>
+          <th class="text-right" *ngFor="let s of stores">{{ s.name }}</th>
+          <th class="text-right">Consolidado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of salesReport">
+          <td><strong>{{ row.month_name | titlecase }}</strong></td>
+          <td class="text-right td-amount" *ngFor="let s of stores">
+            {{ (row.stores[s.code]?.total ?? 0) | currencyCol }}
+          </td>
+          <td class="text-right td-amount"><strong>{{ row.consolidated | currencyCol }}</strong></td>
+        </tr>
+        <tr class="total-row" *ngIf="salesReport.length > 0">
+          <td><strong>TOTAL AÑO</strong></td>
+          <td class="text-right td-amount" *ngFor="let s of stores">
+            <strong>{{ getTotalByStore(salesReport, s.code) | currencyCol }}</strong>
+          </td>
+          <td class="text-right td-amount">
+            <strong>{{ getGrandTotal(salesReport) | currencyCol }}</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ANALISIS BIMESTRAL -->
+    <table class="data-table" *ngIf="activeTab === 'bimensual' && bimonthlyReport">
+      <thead style="background-color: var(--primary); color: white;">
+        <tr>
+          <th>BIMESTRE</th>
+          <th class="text-right" *ngFor="let s of stores">{{ s.name | uppercase }}</th>
+          <th class="text-right">CONSOLIDADO</th>
+          <th class="text-right" *ngFor="let s of stores">% {{ s.code }}</th>
+          <th class="text-right">VAR</th>
+          <th class="text-right">PROM/DÍA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of bimonthlyReport.bimesters">
+          <td><strong>{{ b.name }}</strong></td>
+          <td class="text-right td-amount" *ngFor="let s of stores">
+            {{ (b.stores[s.code] || 0) | currencyCol }}
+          </td>
+          <td class="text-right td-amount"><strong>{{ b.consolidated | currencyCol }}</strong></td>
+          <td class="text-right" *ngFor="let s of stores">{{ (b.percentages[s.code] || 0) | number:'1.1-1' }}%</td>
+          <td class="text-right">{{ b.variation !== null ? (b.variation > 0 ? '+' : '') + (b.variation | number:'1.1-1') + '%' : '-' }}</td>
+          <td class="text-right td-amount">{{ b.prom_day | currencyCol }}</td>
+        </tr>
+        <tr class="total-row" *ngIf="bimonthlyReport.bimesters.length > 0" style="background-color: #ffc107; color: #000;">
+          <td><strong>TOTAL ANUAL</strong></td>
+          <td class="text-right td-amount" *ngFor="let s of stores">
+            <strong>{{ bimonthlyReport.summary.stores[s.code] | currencyCol }}</strong>
+          </td>
+          <td class="text-right td-amount">
+            <strong>{{ bimonthlyReport.summary.consolidated | currencyCol }}</strong>
+          </td>
+          <td class="text-right" *ngFor="let s of stores">
+            <strong>{{ bimonthlyReport.summary.percentages[s.code] | number:'1.1-1' }}%</strong>
+          </td>
+          <td class="text-right"></td>
+          <td class="text-right td-amount">
+            <strong>{{ bimonthlyReport.summary.prom_day | currencyCol }}</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="data-table" *ngIf="activeTab === 'compras' && purchasesReport">
+      <thead>
+        <tr>
+          <th>TIENDA</th>
+          <th>CÓDIGO</th>
+          <th class="text-right">SUBTOTAL</th>
+          <th class="text-right">IVA</th>
+          <th class="text-right">TOTAL</th>
+          <th class="text-right">% PART</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of purchasesReport.stores">
+          <td>{{ s.name | uppercase }}</td>
+          <td>{{ s.code }}</td>
+          <td class="text-right td-amount">{{ s.subtotal | currencyCol }}</td>
+          <td class="text-right td-amount">{{ s.tax | currencyCol }}</td>
+          <td class="text-right td-amount">{{ s.total | currencyCol }}</td>
+          <td class="text-right"><strong>{{ s.part_percent }}%</strong></td>
+        </tr>
+        <tr class="total-row" *ngIf="purchasesReport.stores.length > 0">
+          <td colspan="2"><strong>TOTAL GENERAL</strong></td>
+          <td class="text-right td-amount"><strong>{{ purchasesReport.summary.subtotal | currencyCol }}</strong></td>
+          <td class="text-right td-amount"><strong>{{ purchasesReport.summary.tax | currencyCol }}</strong></td>
+          <td class="text-right td-amount"><strong>{{ purchasesReport.summary.total | currencyCol }}</strong></td>
+          <td class="text-right"><strong>100.0%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

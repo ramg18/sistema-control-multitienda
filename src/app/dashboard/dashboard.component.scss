@@ -1,0 +1,132 @@
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  margin-bottom: 0;
+}
+
+.chart-card {
+  &-sm { min-width: 0; }
+
+  .card-body { padding-top: 16px; }
+
+  canvas {
+    max-height: 280px;
+  }
+}
+
+/* --- MODERN WIDGETS --- */
+.hero-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.widget-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  }
+
+  .w-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+
+    .w-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .w-icon {
+      font-size: 1.5rem;
+      opacity: 0.9;
+    }
+  }
+
+  .w-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .w-main-value {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+
+    .w-label {
+      font-size: 0.9rem;
+      color: #64748b;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .w-amount {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+  }
+
+  .w-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .w-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+
+      span { color: #475569; }
+      strong { color: #1e293b; font-weight: 600; }
+    }
+  }
+
+  /* Colors */
+  &.widget-blue .w-header { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+  &.widget-green .w-header { background: linear-gradient(135deg, #059669, #10b981); }
+  
+  /* Yellow/Amber dynamic */
+  &.widget-yellow {
+    .w-header { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    &.widget-positive .w-header { background: linear-gradient(135deg, #059669, #10b981); }
+    &.widget-negative .w-header { background: linear-gradient(135deg, #b91c1c, #ef4444); }
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+
+  &.badge-emerald { background-color: #d1fae5; color: #065f46; }
+  &.badge-rose { background-color: #ffe4e6; color: #9f1239; }
+}
+
+.split-half {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+@media (max-width: 900px) {
+  .charts-row { grid-template-columns: 1fr; }
+  .split-half { grid-template-columns: 1fr !important; }
+}

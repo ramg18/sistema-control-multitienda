@@ -1,0 +1,61 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Auditoría</h2>
+    <p class="page-subtitle">Días sin registro de ventas</p>
+  </div>
+</div>
+
+<div class="card mb-24">
+  <div class="card-header"><div class="card-title">Rango de fechas</div></div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="search()">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Desde *</label>
+          <input type="date" class="form-control" formControlName="from" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hasta *</label>
+          <input type="date" class="form-control" formControlName="to" />
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <label class="form-label" style="visibility:hidden">-</label>
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ loading ? 'Buscando...' : '🔍 Buscar' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="searched && !loading">
+  <div class="alert alert-success" *ngIf="!hasMissing">
+    ✅ No se encontraron días faltantes en el período seleccionado.
+  </div>
+
+  <div *ngFor="let r of results" class="card mb-24">
+    <div class="card-header">
+      <div>
+        <div class="card-title">{{ r.store.name }} ({{ r.store.code }})</div>
+        <div class="card-subtitle">
+          {{ r.registered }} días registrados · <strong class="text-danger">{{ r.missing }} días faltantes</strong>
+          de {{ r.total_days }} días totales
+        </div>
+      </div>
+      <span class="badge" [class.badge-emerald]="r.missing === 0" [class.badge-rose]="r.missing > 0">
+        {{ r.missing === 0 ? '✅ Completo' : '⚠️ Faltan días' }}
+      </span>
+    </div>
+    <div class="card-body" *ngIf="r.missing > 0" style="padding-top:12px">
+      <div class="missing-days-grid">
+        <div *ngFor="let d of r.missing_days" class="missing-day-chip"
+             [class.weekend]="d.is_weekend">
+          <strong>{{ d.date | date:'dd/MM' }}</strong>
+          <span>{{ d.day_of_week }}</span>
+          <span class="badge badge-slate" *ngIf="d.is_weekend">Fin de semana</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

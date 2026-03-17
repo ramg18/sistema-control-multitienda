@@ -1,0 +1,17 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <h1 class="page-heading">{{ pageTitle }}</h1>
+  </div>
+  <div class="topbar-right">
+    <div class="year-selector">
+      <select class="form-control" [(ngModel)]="selectedYear" (change)="onYearChange()">
+        <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+      </select>
+    </div>
+    <div class="store-badge" *ngIf="storeName">
+      <span>🏪</span> {{ storeName }}
+    </div>
+    <div class="topbar-divider"></div>
+    <button class="btn btn-icon" (click)="logout()" title="Cerrar sesión">⏻</button>
+  </div>
+</header>

@@ -1,0 +1,103 @@
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../core/services/api.service';
+import { Sale, PaginatedResponse, Store, TaxRate } from '../core/models/models';
+
+@Component({
+  selector: 'app-ventas',
+  templateUrl: './ventas.component.html',
+  styleUrls: ['./ventas.component.scss'],
+})
+export class VentasComponent implements OnInit {
+  sales: Sale[] = [];
+  stores: Store[] = [];
+  taxRates: TaxRate[] = [];
+  loading = false;
+  showForm = false;
+  editingSale?: Sale;
+  page = 1;
+  lastPage = 1;
+  total = 0;
+
+  filters = {
+    store_id: '',
+    month: '',
+    year: new Date().getFullYear(),
+    payment_method: '',
+  };
+
+  months = [
+    { v: '1', l: 'Enero' }, { v: '2', l: 'Febrero' }, { v: '3', l: 'Marzo' },
+    { v: '4', l: 'Abril' }, { v: '5', l: 'Mayo' }, { v: '6', l: 'Junio' },
+    { v: '7', l: 'Julio' }, { v: '8', l: 'Agosto' }, { v: '9', l: 'Septiembre' },
+    { v: '10', l: 'Octubre' }, { v: '11', l: 'Noviembre' }, { v: '12', l: 'Diciembre' },
+  ];
+
+  paymentMethods = [
+    { v: 'EF', l: 'Efectivo' }, { v: 'CF', l: 'Crédito/Fiado' },
+    { v: 'TR', l: 'Transferencia' }, { v: 'TD', l: 'Débito' },
+    { v: 'TC', l: 'T. Crédito' }, { v: 'VA', l: 'Vale' },
+  ];
+
+  constructor(private api: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadCatalogs();
+    this.loadSales();
+    window.addEventListener('yearChanged', (e: any) => {
+      this.filters.year = e.detail;
+      this.loadSales();
+    });
+  }
+
+  loadCatalogs(): void {
+    this.api.get<Store[]>('stores').subscribe(s => this.stores = s);
+    this.api.get<TaxRate[]>('tax-rates').subscribe(r => this.taxRates = r);
+  }
+
+  loadSales(): void {
+    this.loading = true;
+    this.api.get<PaginatedResponse<Sale>>('sales', { ...this.filters, page: this.page }).subscribe({
+      next: res => {
+        this.sales    = res.data;
+        this.lastPage = res.last_page;
+        this.total    = res.total;
+        this.loading  = false;
+      },
+      error: () => { this.loading = false; }
+    });
+  }
+
+  openForm(sale?: Sale): void {
+    this.editingSale = sale;
+    this.showForm    = true;
+  }
+
+  onFormSaved(): void {
+    this.showForm    = false;
+    this.editingSale = undefined;
+    this.loadSales();
+  }
+
+  onFormCancelled(): void {
+    this.showForm    = false;
+    this.editingSale = undefined;
+  }
+
+  deleteSale(sale: Sale): void {
+    if (!confirm(`¿Eliminar venta ${sale.prefix}-${sale.doc_number}?`)) return;
+    this.api.delete(`sales/${sale.id}`).subscribe(() => this.loadSales());
+  }
+
+  applyFilters(): void {
+    this.page = 1;
+    this.loadSales();
+  }
+
+  clearFilters(): void {
+    this.filters = { store_id: '', month: '', year: new Date().getFullYear(), payment_method: '' };
+    this.applyFilters();
+  }
+
+  prevPage(): void { if (this.page > 1) { this.page--; this.loadSales(); } }
+  nextPage(): void { if (this.page < this.lastPage) { this.page++; this.loadSales(); } }
+}

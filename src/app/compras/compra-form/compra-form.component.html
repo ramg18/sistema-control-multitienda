@@ -1,0 +1,71 @@
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Tienda *</label>
+      <select class="form-control" formControlName="store_id">
+        <option value="">Selecciona tienda</option>
+        <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Proveedor *</label>
+      <select class="form-control" formControlName="supplier_id">
+        <option value="">Selecciona proveedor</option>
+        <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }} — {{ s.nit }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha *</label>
+      <input type="date" class="form-control" formControlName="purchase_date" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Prefijo *</label>
+      <input type="text" class="form-control" formControlName="prefix" placeholder="Ej: FT" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Número Factura *</label>
+      <input type="text" class="form-control" formControlName="invoice_number" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Subtotal *</label>
+      <input type="number" class="form-control form-control-mono" formControlName="subtotal" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">IVA</label>
+      <input type="number" class="form-control form-control-mono" formControlName="tax_amount" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Observaciones</label>
+    <input type="text" class="form-control" formControlName="observations" />
+  </div>
+
+  <!-- Retentions -->
+  <div class="pm-section">
+    <div class="pm-header">
+      <span class="form-label">Retenciones (Colombia)</span>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="addRet()">+ Agregar Retención</button>
+    </div>
+    <div formArrayName="retentions">
+      <div *ngFor="let r of rets.controls; let i = index" [formGroupName]="i" class="pm-row">
+        <select class="form-control" formControlName="retention_type_id" style="flex:2" (change)="onRetTypeChange(i)">
+          <option value="">Tipo de retención</option>
+          <option *ngFor="let rt of retentionTypes" [value]="rt.id">{{ rt.name }} ({{ rt.rate * 100 | number:'1.0-2' }}%)</option>
+        </select>
+        <input type="number" class="form-control form-control-mono" formControlName="base" placeholder="Base" style="flex:1" />
+        <input type="number" class="form-control form-control-mono" formControlName="rate" placeholder="Tasa" style="flex:1" step="0.001" />
+        <button type="button" class="btn btn-icon btn-sm" (click)="removeRet(i)" style="color:var(--danger)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="cancelled.emit()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="saving">
+      {{ saving ? 'Guardando...' : (purchase ? 'Actualizar' : 'Guardar Compra') }}
+    </button>
+  </div>
+</form>

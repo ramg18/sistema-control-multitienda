@@ -1,0 +1,55 @@
+<div class="login-page">
+  <div class="login-bg">
+    <div class="login-bg-grid"></div>
+    <div class="login-bg-glow"></div>
+  </div>
+
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">⬡</div>
+      <h1 class="login-title">MultiTienda</h1>
+      <p class="login-subtitle">Sistema de Control Multisucursal</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="admin@sistema.com"
+          autocomplete="email"
+        />
+        <div *ngIf="f['email'].touched && f['email'].invalid" class="form-error">
+          Ingresa un correo válido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+        <div *ngIf="f['password'].touched && f['password'].invalid" class="form-error">
+          La contraseña es requerida
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary login-btn" [disabled]="loading">
+        <span *ngIf="!loading">Iniciar sesión</span>
+        <span *ngIf="loading">Verificando...</span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      Sistema de Control Multitienda © {{ year }}
+    </div>
+  </div>
+</div>

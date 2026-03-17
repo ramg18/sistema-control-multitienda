@@ -1,0 +1,90 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Compras</h2>
+    <p class="page-subtitle">{{ total | number }} registros · Año {{ filters.year }}</p>
+  </div>
+  <button class="btn btn-primary" (click)="openForm()">+ Nueva Compra</button>
+</div>
+
+<div class="card mb-24" *ngIf="showForm">
+  <div class="card-header">
+    <div class="card-title">{{ editingPurchase ? 'Editar Compra' : 'Registrar Nueva Compra' }}</div>
+    <button class="btn btn-icon btn-sm" (click)="onCancelled()">✕</button>
+  </div>
+  <div class="card-body">
+    <app-compra-form
+      [stores]="stores"
+      [suppliers]="suppliers"
+      [purchase]="editingPurchase"
+      (saved)="onSaved()"
+      (cancelled)="onCancelled()">
+    </app-compra-form>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <select class="form-control filter-control" [(ngModel)]="filters.store_id" (change)="applyFilters()">
+    <option value="">Todas las tiendas</option>
+    <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+  </select>
+  <select class="form-control filter-control" [(ngModel)]="filters.month" (change)="applyFilters()">
+    <option value="">Todos los meses</option>
+    <option *ngFor="let m of months" [value]="m.v">{{ m.l }}</option>
+  </select>
+  <button class="btn btn-secondary btn-sm" (click)="clearFilters()">Limpiar</button>
+</div>
+
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tienda</th>
+          <th>Proveedor</th>
+          <th>Factura</th>
+          <th class="text-right">Subtotal</th>
+          <th class="text-right">IVA</th>
+          <th class="text-right">Total</th>
+          <th class="text-right">Retenciones</th>
+          <th class="text-right">Neto a Pagar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of purchases">
+          <td class="mono">{{ p.purchase_date | date:'dd/MM/yyyy' }}</td>
+          <td><span class="badge badge-teal">{{ p.store?.code }}</span> {{ p.store?.name }}</td>
+          <td>{{ p.supplier?.name }}</td>
+          <td class="mono">{{ p.prefix }}-{{ p.invoice_number }}</td>
+          <td class="text-right td-amount">{{ p.subtotal | currencyCol }}</td>
+          <td class="text-right td-amount muted">{{ p.tax_amount | currencyCol }}</td>
+          <td class="text-right td-amount"><strong>{{ p.total | currencyCol }}</strong></td>
+          <td class="text-right td-amount text-danger">-{{ p.total_retentions | currencyCol }}</td>
+          <td class="text-right td-amount"><strong>{{ p.net_paid | currencyCol }}</strong></td>
+          <td>
+            <div class="d-flex gap-12">
+              <button class="btn btn-icon btn-sm" (click)="openForm(p)" title="Editar">✏️</button>
+              <button class="btn btn-icon btn-sm" (click)="delete(p)" title="Eliminar" style="color:var(--danger)">🗑</button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="purchases.length === 0">
+          <td colspan="10">
+            <div class="empty-state">
+              <div class="empty-icon">🛒</div>
+              <div class="empty-title">Sin registros</div>
+              <div class="empty-text">Registra una nueva compra.</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination" *ngIf="!loading && lastPage > 1">
+    <button class="page-btn" [disabled]="page === 1" (click)="prevPage()">‹</button>
+    <span class="page-info">Pág. {{ page }} de {{ lastPage }}</span>
+    <button class="page-btn" [disabled]="page === lastPage" (click)="nextPage()">›</button>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Gestión de Tiendas</h2>
+    <p class="page-subtitle">{{ stores.length }} tiendas registradas</p>
+  </div>
+  <button class="btn btn-primary" (click)="openForm()">+ Nueva Tienda</button>
+</div>
+
+<div class="card mb-24" *ngIf="showForm">
+  <div class="card-header">
+    <div class="card-title">{{ editing ? 'Editar Tienda' : 'Nueva Tienda' }}</div>
+    <button class="btn btn-icon btn-sm" (click)="showForm = false">✕</button>
+  </div>
+  <div class="card-body">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Código *</label>
+          <input type="text" class="form-control" formControlName="code" placeholder="T01" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <input type="text" class="form-control" formControlName="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciudad *</label>
+          <input type="text" class="form-control" formControlName="city" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prefijo *</label>
+          <input type="text" class="form-control" formControlName="prefix" placeholder="FV" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nº Caja *</label>
+          <input type="text" class="form-control" formControlName="cash_register_number" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving">
+          {{ saving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr><th>Código</th><th>Nombre</th><th>Ciudad</th><th>Prefijo</th><th>Caja</th><th>Estado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of stores">
+          <td><span class="badge badge-teal">{{ s.code }}</span></td>
+          <td><strong>{{ s.name }}</strong></td>
+          <td>{{ s.city }}</td>
+          <td class="mono">{{ s.prefix }}</td>
+          <td class="mono">{{ s.cash_register_number }}</td>
+          <td><span class="badge" [class.badge-emerald]="s.is_active" [class.badge-slate]="!s.is_active">{{ s.is_active ? 'Activa' : 'Inactiva' }}</span></td>
+          <td>
+            <div class="d-flex gap-12">
+              <button class="btn btn-icon btn-sm" (click)="openForm(s)">✏️</button>
+              <button class="btn btn-icon btn-sm" (click)="delete(s)" style="color:var(--danger)">🗑</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- Row 1 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Tienda *</label>
+      <select class="form-control" formControlName="store_id">
+        <option value="">Selecciona una tienda</option>
+        <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha de Venta *</label>
+      <input type="date" class="form-control" formControlName="sale_date" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha de Registro *</label>
+      <input type="date" class="form-control" formControlName="registration_date" />
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Prefijo *</label>
+      <input type="text" class="form-control" formControlName="prefix" placeholder="Ej: FV" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Número Documento *</label>
+      <input type="text" class="form-control" formControlName="doc_number" placeholder="Ej: 001234" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cliente *</label>
+      <input type="text" class="form-control" formControlName="client" placeholder="Ej: VARIOS" />
+    </div>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Total con IVA *</label>
+      <input type="number" class="form-control form-control-mono" formControlName="total_with_tax" placeholder="0" step="1" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tasa IVA *</label>
+      <select class="form-control" formControlName="tax_rate_id">
+        <option value="">Selecciona tasa</option>
+        <option *ngFor="let r of taxRates" [value]="r.id">{{ r.name }} ({{ r.rate * 100 | number:'1.0-0' }}%)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nº Operaciones</label>
+      <input type="number" class="form-control form-control-mono" formControlName="operations_count" min="0" />
+    </div>
+  </div>
+
+  <!-- Auto-calculation Row -->
+  <div class="form-row" style="background:var(--bg-light, #f8fafc); padding:16px; border-radius:8px; margin-bottom:16px; border: 1px solid var(--border-color, #e2e8f0);">
+    <div class="form-group">
+      <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">Base Gravable (S/IVA)</label>
+      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace;">{{ calculatedBase | currency:'COP':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">IVA Generado</label>
+      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace; color: var(--danger, #ef4444);">{{ calculatedTax | currency:'COP':'symbol':'1.0-0' }}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">Total Ingresado (C/IVA)</label>
+      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace; color: var(--primary, #3b82f6);">{{ (form.get('total_with_tax')?.value || 0) | currency:'COP':'symbol':'1.0-0' }}</div>
+    </div>
+  </div>
+
+  <!-- Row 4 -->
+  <div class="form-row">
+    <div class="form-group" style="flex: 2;">
+      <label class="form-label">Observaciones</label>
+      <input type="text" class="form-control" formControlName="observations" placeholder="Opcional. Ej: EF:395.953 | TR:... " />
+    </div>
+    <div class="form-group" style="flex: 1; justify-content:flex-end">
+      <label class="form-label" style="visibility:hidden">-</label>
+      <label class="checkbox-label" style="background: var(--bg-light, #f8fafc); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color, #e2e8f0); width: 100%; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" formControlName="is_day_without_record" />
+        Día sin registro
+      </label>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="pm-section">
+    <div class="pm-header">
+      <span class="form-label">Formas de Pago</span>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="addPM()">+ Agregar</button>
+    </div>
+    <div formArrayName="payment_methods">
+      <div *ngFor="let pm of pms.controls; let i = index" [formGroupName]="i" class="pm-row">
+        <select class="form-control" formControlName="method" style="flex:1">
+          <option *ngFor="let o of paymentMethodOptions" [value]="o.v">{{ o.l }}</option>
+        </select>
+        <input type="number" class="form-control form-control-mono" formControlName="amount"
+               placeholder="Monto" style="flex:1" />
+        <button type="button" class="btn btn-icon btn-sm" (click)="removePM(i)" style="color:var(--danger, #ef4444)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="cancelled.emit()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="saving">
+      {{ saving ? 'Guardando...' : (sale ? 'Actualizar' : 'Guardar Venta') }}
+    </button>
+  </div>
+</form>
