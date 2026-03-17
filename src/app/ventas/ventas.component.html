@@ -78,8 +78,8 @@
             </div>
           </td>
           <td class="text-right td-amount">{{ s.total_with_tax | currencyCol }}</td>
-          <td class="text-right td-amount text-muted">{{ s.taxable_base | currencyCol }}</td>
-          <td class="text-right td-amount">{{ s.tax_amount | currencyCol }}</td>
+          <td class="text-right td-amount text-muted">{{ s.tax_amount | currencyCol }}</td>
+          <td class="text-right td-amount">{{ s.taxable_base | currencyCol }}</td>
           <td class="mono text-right">{{ s.operations_count }}</td>
           <td>
             <span class="badge" [class.badge-emerald]="s.source === 'manual'"
