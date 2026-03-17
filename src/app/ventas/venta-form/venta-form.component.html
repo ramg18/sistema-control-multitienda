@@ -59,11 +59,11 @@
   <div class="form-row" style="background:var(--bg-light, #f8fafc); padding:16px; border-radius:8px; margin-bottom:16px; border: 1px solid var(--border-color, #e2e8f0);">
     <div class="form-group">
       <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">Base Gravable (S/IVA)</label>
-      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace;">{{ calculatedBase | currency:'COP':'symbol':'1.0-0' }}</div>
+      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace;">{{ (form.get('taxable_base')?.value || 0)  | currency:'COP':'symbol':'1.0-0' }}</div>
     </div>
     <div class="form-group">
       <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">IVA Generado</label>
-      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace; color: var(--danger, #ef4444);">{{ calculatedTax | currency:'COP':'symbol':'1.0-0' }}</div>
+      <div style="font-size: 1.1rem; font-weight: 600; font-family: monospace; color: var(--danger, #ef4444);">{{  (form.get('tax_amount')?.value || 0) | currency:'COP':'symbol':'1.0-0' }}</div>
     </div>
     <div class="form-group">
       <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted, #64748b); margin-bottom: 4px;">Total Ingresado (C/IVA)</label>
