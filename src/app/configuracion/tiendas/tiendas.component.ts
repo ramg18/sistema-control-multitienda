@@ -45,7 +45,17 @@ export class TiendasComponent implements OnInit {
   }
 
   save(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) { 
+        this.form.markAllAsTouched(); 
+        alert('Por favor completa todos los campos obligatorios (*) correctamente.\nRevisa los recuadros marcados en rojo.');
+        setTimeout(() => {
+          const errorEl = document.querySelector('.alert-danger') || document.querySelector('form .ng-invalid');
+          if (errorEl) {
+            errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 50);
+        return; 
+    }
     this.saving = true;
     this.error  = '';
     const obs = this.editing
@@ -53,7 +63,20 @@ export class TiendasComponent implements OnInit {
       : this.api.post<Store>('stores', this.form.value);
     obs.subscribe({
       next: () => { this.saving = false; this.showForm = false; this.load(); },
-      error: err => { this.saving = false; this.error = err?.error?.message ?? 'Error'; },
+      error: err => { 
+        this.saving = false; 
+        const msgs = err?.error?.errors
+          ? Object.values(err.error.errors).flat().join('\n')
+          : err?.error?.message ?? 'Error';
+        this.error = msgs as string;
+        alert('ERROR DEL SISTEMA:\n\n' + this.error);
+        setTimeout(() => {
+          const errorEl = document.querySelector('.alert-danger');
+          if (errorEl) {
+            errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 50);
+      },
     });
   }
 

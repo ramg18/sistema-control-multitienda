@@ -38,7 +38,7 @@
       </div>
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="showForm = false">Cancelar</button>
-        <button type="submit" class="btn btn-primary" [disabled]="saving">
+        <button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">
           {{ saving ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
