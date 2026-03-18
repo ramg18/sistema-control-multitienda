@@ -3,5 +3,10 @@
   <app-topbar (toggleSidebar)="isSidebarOpen = !isSidebarOpen"></app-topbar>
   <main class="page-content" (click)="isSidebarOpen = false">
     <router-outlet></router-outlet>
+    
+    <footer class="app-footer">
+      <span>Desarrollado y potenciado por</span>
+      <a href="https://koudelagency.cloud/" target="_blank" rel="noopener noreferrer">Koudel Agency</a>
+    </footer>
   </main>
 </div>

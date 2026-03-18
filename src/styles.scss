@@ -662,3 +662,25 @@ select.form-control { cursor: pointer; }
     z-index: 51;
   }
 }
+
+/* Footer de la Agencia */
+.app-footer {
+  margin-top: auto;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  
+  a {
+    color: var(--brand-indigo);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.25rem;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--brand-indigo-dark, #4f46e5);
+      text-decoration: underline;
+    }
+  }
+}

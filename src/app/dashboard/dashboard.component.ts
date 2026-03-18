@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartData, ChartOptions } from 'chart.js';
+import { ChartData, ChartOptions, Chart } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ApiService } from '../core/services/api.service';
 import { DashboardData, PAYMENT_METHOD_LABELS, PaymentMethod } from '../core/models/models';
+
+Chart.register(ChartDataLabels);
 
 const MONTH_NAMES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
@@ -26,6 +29,19 @@ export class DashboardComponent implements OnInit {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
+      datalabels: {
+        anchor: 'end',
+        align: 'top',
+        color: '#475569',
+        font: { weight: 'bold', size: 10 },
+        formatter: (value: any) => {
+          if (Number(value) === 0) return null;
+          if (Number(value) >= 1000000) {
+            return `$${(Number(value) / 1000000).toFixed(1)}M`;
+          }
+          return `$${Math.round(value).toLocaleString('es-CO')}`;
+        }
+      } as any,
       tooltip: {
         callbacks: {
           label: ctx => `$ ${Math.round(ctx.raw as number).toLocaleString('es-CO')}`,
@@ -46,6 +62,14 @@ export class DashboardComponent implements OnInit {
     responsive: true,
     plugins: {
       legend: { position: 'right' },
+      datalabels: {
+        color: '#fff',
+        font: { weight: 'bold', size: 11 },
+        formatter: (value: any, ctx: any) => {
+          if (Number(value) === 0) return null;
+          return `$ ${Math.round(value).toLocaleString('es-CO')}`;
+        }
+      } as any,
       tooltip: {
         callbacks: {
           label: ctx => `$ ${Math.round(ctx.raw as number).toLocaleString('es-CO')}`,
