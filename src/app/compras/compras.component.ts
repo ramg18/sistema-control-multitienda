@@ -64,4 +64,10 @@ export class ComprasComponent implements OnInit {
   clearFilters(): void { this.filters = { store_id: '', month: '', year: new Date().getFullYear() }; this.applyFilters(); }
   prevPage(): void { if (this.page > 1) { this.page--; this.loadPurchases(); } }
   nextPage(): void { if (this.page < this.lastPage) { this.page++; this.loadPurchases(); } }
+
+  get currentTotalSubtotal(): number { return this.purchases.reduce((sum, p) => sum + Number(p.subtotal || 0), 0); }
+  get currentTotalIva(): number { return this.purchases.reduce((sum, p) => sum + Number(p.tax_amount || 0), 0); }
+  get currentTotal(): number { return this.purchases.reduce((sum, p) => sum + Number(p.total || 0), 0); }
+  get currentTotalRetentions(): number { return this.purchases.reduce((sum, p) => sum + Number(p.total_retentions || 0), 0); }
+  get currentTotalNetPaid(): number { return this.purchases.reduce((sum, p) => sum + Number(p.net_paid || 0), 0); }
 }

@@ -93,13 +93,13 @@
       <button type="button" class="btn btn-secondary btn-sm" (click)="addPM()">+ Agregar</button>
     </div>
     <div formArrayName="payment_methods">
-      <div *ngFor="let pm of pms.controls; let i = index" [formGroupName]="i" class="pm-row">
+      <div *ngFor="let pm of pms.controls; let i = index" [formGroupName]="i" class="pm-row" style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
         <select class="form-control" formControlName="method" style="flex:1">
           <option *ngFor="let o of paymentMethodOptions" [value]="o.v">{{ o.l }}</option>
         </select>
         <input type="number" class="form-control form-control-mono" formControlName="amount"
                placeholder="Monto" style="flex:1" />
-        <button type="button" class="btn btn-icon btn-sm" (click)="removePM(i)" style="color:var(--danger, #ef4444)">✕</button>
+        <button type="button" class="btn btn-icon btn-sm" (click)="removePM(i)" style="color:var(--danger, #ef4444); flex: 0 0 auto;">✕</button>
       </div>
     </div>
   </div>
@@ -107,7 +107,7 @@
   <!-- Actions -->
   <div class="form-actions">
     <button type="button" class="btn btn-secondary" (click)="cancelled.emit()">Cancelar</button>
-    <button type="submit" class="btn btn-primary" [disabled]="saving">
+    <button type="button" class="btn btn-primary" [disabled]="saving" (click)="onSubmit()">
       {{ saving ? 'Guardando...' : (sale ? 'Actualizar' : 'Guardar Venta') }}
     </button>
   </div>

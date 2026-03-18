@@ -80,6 +80,17 @@
           </td>
         </tr>
       </tbody>
+      <tfoot *ngIf="purchases.length > 0" style="background-color: var(--card-bg); border-top: 2px solid var(--border-color);">
+        <tr>
+          <td colspan="4" class="text-right" style="font-weight: 600; padding-right: 1rem;">Total esta página:</td>
+          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalSubtotal | currencyCol }}</td>
+          <td class="text-right td-amount text-muted" style="font-weight: 600;">{{ currentTotalIva | currencyCol }}</td>
+          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotal | currencyCol }}</td>
+          <td class="text-right td-amount text-danger" style="font-weight: 600;">-{{ currentTotalRetentions | currencyCol }}</td>
+          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalNetPaid | currencyCol }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
   <div class="pagination" *ngIf="!loading && lastPage > 1">

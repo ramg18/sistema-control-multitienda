@@ -25,10 +25,15 @@ export class CompraFormComponent implements OnInit {
   ngOnInit(): void {
     this.api.get<RetentionType[]>('retention-types').subscribe(r => this.retentionTypes = r);
     const p = this.purchase;
+    const formatDt = (dt?: string) => {
+      if (!dt) return this.today;
+      return dt.split('T')[0].split(' ')[0];
+    };
+
     this.form = this.fb.group({
       store_id:       [p?.store_id      ?? '', Validators.required],
       supplier_id:    [p?.supplier_id   ?? '', Validators.required],
-      purchase_date:  [p?.purchase_date ?? this.today, Validators.required],
+      purchase_date:  [formatDt(p?.purchase_date), Validators.required],
       prefix:         [p?.prefix        ?? '', Validators.required],
       invoice_number: [p?.invoice_number ?? '', Validators.required],
       subtotal:       [p?.subtotal       ?? '', [Validators.required, Validators.min(0)]],
@@ -65,7 +70,23 @@ export class CompraFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) { 
+      this.form.markAllAsTouched(); 
+      this.error = 'Por favor completa todos los campos obligatorios (*) correctamente.';
+      console.log('Form is invalid', this.form.value);
+      Object.keys(this.form.controls).forEach(key => {
+        const ctrl = this.form.get(key);
+        if (ctrl && ctrl.invalid) console.log(key, ctrl.errors);
+      });
+      alert(this.error + '\nRevisa los recuadros marcados en rojo.');
+      setTimeout(() => {
+        const errorEl = document.querySelector('.alert-danger') || document.querySelector('form .ng-invalid');
+        if (errorEl) {
+          errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 50);
+      return; 
+    }
     this.saving = true;
     this.error  = '';
     const body = this.form.value;
@@ -78,9 +99,17 @@ export class CompraFormComponent implements OnInit {
       error: err => {
         this.saving = false;
         const msgs = err?.error?.errors
-          ? Object.values(err.error.errors).flat().join(', ')
-          : err?.error?.message ?? 'Error al guardar';
+          ? Object.values(err.error.errors).flat().join('\n')
+          : err?.error?.message ?? 'Error al guardar (Backend)';
         this.error = msgs as string;
+        
+        alert('ERROR DEL SISTEMA:\n\n' + this.error);
+        setTimeout(() => {
+          const errorEl = document.querySelector('.alert-danger');
+          if (errorEl) {
+            errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 50);
       },
     });
   }

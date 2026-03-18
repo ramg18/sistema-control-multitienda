@@ -100,4 +100,9 @@ export class VentasComponent implements OnInit {
 
   prevPage(): void { if (this.page > 1) { this.page--; this.loadSales(); } }
   nextPage(): void { if (this.page < this.lastPage) { this.page++; this.loadSales(); } }
+
+  get currentTotalWithTax(): number { return this.sales.reduce((sum, s) => sum + Number(s.total_with_tax || 0), 0); }
+  get currentTotalIva(): number { return this.sales.reduce((sum, s) => sum + Number(s.tax_amount || 0), 0); }
+  get currentTotalBase(): number { return this.sales.reduce((sum, s) => sum + Number(s.taxable_base || 0), 0); }
+  get currentTotalOps(): number { return this.sales.reduce((sum, s) => sum + Number(s.operations_count || 0), 0); }
 }

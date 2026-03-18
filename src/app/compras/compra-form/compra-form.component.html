@@ -64,7 +64,7 @@
 
   <div class="form-actions">
     <button type="button" class="btn btn-secondary" (click)="cancelled.emit()">Cancelar</button>
-    <button type="submit" class="btn btn-primary" [disabled]="saving">
+    <button type="button" class="btn btn-primary" [disabled]="saving" (click)="onSubmit()">
       {{ saving ? 'Guardando...' : (purchase ? 'Actualizar' : 'Guardar Compra') }}
     </button>
   </div>

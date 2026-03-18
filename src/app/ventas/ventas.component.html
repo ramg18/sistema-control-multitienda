@@ -104,6 +104,16 @@
           </td>
         </tr>
       </tbody>
+      <tfoot *ngIf="sales.length > 0" style="background-color: var(--card-bg); border-top: 2px solid var(--border-color);">
+        <tr>
+          <td colspan="4" class="text-right" style="font-weight: 600; padding-right: 1rem;">Total esta página:</td>
+          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalWithTax | currencyCol }}</td>
+          <td class="text-right td-amount text-muted" style="font-weight: 600;">{{ currentTotalIva | currencyCol }}</td>
+          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalBase | currencyCol }}</td>
+          <td class="text-right mono" style="font-weight: 600; color: var(--text-main);">{{ currentTotalOps }}</td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 

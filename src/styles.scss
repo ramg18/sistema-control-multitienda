@@ -234,6 +234,9 @@ html, body {
     letter-spacing: 0.6px;
     color: var(--text-muted);
     white-space: nowrap;
+
+    &.text-right { text-align: right; }
+    &.text-center { text-align: center; }
   }
 
   td {
@@ -368,6 +371,11 @@ html, body {
   &::placeholder { color: var(--text-muted); }
 
   &.form-control-mono { font-family: var(--font-mono); }
+
+  &.ng-invalid.ng-touched {
+    border-color: var(--brand-rose);
+    &:focus { box-shadow: 0 0 0 3px rgba(244,63,94,.12); }
+  }
 }
 
 select.form-control { cursor: pointer; }
