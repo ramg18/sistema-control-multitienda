@@ -67,7 +67,10 @@ export class DashboardComponent implements OnInit {
         font: { weight: 'bold', size: 11 },
         formatter: (value: any, ctx: any) => {
           if (Number(value) === 0) return null;
-          return `$ ${Math.round(value).toLocaleString('es-CO')}`;
+          if (Number(value) >= 1000000) {
+            return `$${(Number(value) / 1000000).toFixed(1)}M`;
+          }
+          return `$${Math.round(value).toLocaleString('es-CO')}`;
         }
       } as any,
       tooltip: {
