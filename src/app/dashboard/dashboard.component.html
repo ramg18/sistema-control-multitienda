@@ -97,30 +97,29 @@
     </div>
   </div>
 
-  <!-- GRAFICOS COMPLEMENTARIOS (Originales) -->
-  <div class="charts-row mt-24">
-    <div class="card chart-card" *ngIf="salesChartData.datasets.length">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Tendencia de Ventas (Mensual)</div>
-          <div class="card-subtitle">Comparativo entre tiendas</div>
-        </div>
-      </div>
-      <div class="card-body">
-        <canvas baseChart [data]="salesChartData" [options]="barChartOptions" type="bar"></canvas>
+  <!-- TENDENCIA DE VENTAS -->
+  <div class="card chart-card mt-24" *ngIf="salesChartData.datasets.length">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Tendencia de Ventas (Mensual)</div>
+        <div class="card-subtitle">Comparativo entre tiendas</div>
       </div>
     </div>
+    <div class="card-body">
+      <canvas baseChart [data]="salesChartData" [options]="barChartOptions" type="bar"></canvas>
+    </div>
+  </div>
 
-    <div class="card chart-card chart-card-sm">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Formas de Pago</div>
-          <div class="card-subtitle">Distribución anual de ventas</div>
-        </div>
+  <!-- FORMAS DE PAGO -->
+  <div class="card chart-card mt-24">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Formas de Pago</div>
+        <div class="card-subtitle">Distribución anual de ventas</div>
       </div>
-      <div class="card-body">
-        <canvas baseChart [data]="paymentChartData" [options]="doughnutOptions" type="doughnut"></canvas>
-      </div>
+    </div>
+    <div class="card-body">
+      <canvas baseChart [data]="paymentChartData" [options]="barChartOptions" type="bar"></canvas>
     </div>
   </div>
 

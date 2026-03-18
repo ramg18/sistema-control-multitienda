@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
 
   // ── Charts ──────────────────────────────────────────────────
   salesChartData: ChartData<'bar'> = { labels: MONTH_NAMES, datasets: [] };
-  paymentChartData: ChartData<'doughnut'> = { labels: [], datasets: [] };
+  paymentChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   storeSalesChartData: ChartData<'doughnut'> = { labels: [], datasets: [] };
   storePurchasesChartData: ChartData<'doughnut'> = { labels: [], datasets: [] };
   storeRows: any[] = [];
@@ -165,10 +165,10 @@ export class DashboardComponent implements OnInit {
         PAYMENT_METHOD_LABELS[p.method as PaymentMethod] ?? p.method
       ),
       datasets: [{
+        label: 'Monto de Ventas',
         data: d.sales.payment_methods.map(p => p.total),
         backgroundColor: d.sales.payment_methods.map(p => pmColors[p.method] ?? '#94a3b8'),
-        borderWidth: 2,
-        borderColor: '#fff',
+        borderRadius: 4
       }]
     };
   }
