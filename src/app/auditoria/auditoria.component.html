@@ -51,7 +51,7 @@
       <div class="missing-days-grid">
         <div *ngFor="let d of r.missing_days" class="missing-day-chip"
              [class.weekend]="d.is_weekend">
-          <strong>{{ d.date | date:'dd/MM' }}</strong>
+          <strong>{{ d.date | date:'dd/MM':'UTC' }}</strong>
           <span>{{ d.day_of_week }}</span>
           <span class="badge badge-slate" *ngIf="d.is_weekend">Fin de semana</span>
         </div>

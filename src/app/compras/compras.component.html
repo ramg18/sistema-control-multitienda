@@ -54,7 +54,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let p of purchases">
-          <td class="mono">{{ p.purchase_date | date:'dd/MM/yyyy' }}</td>
+          <td class="mono">{{ p.purchase_date | date:'dd/MM/yyyy':'UTC' }}</td>
           <td><span class="badge badge-teal">{{ p.store?.code }}</span> {{ p.store?.name }}</td>
           <td>{{ p.supplier?.name }}</td>
           <td class="mono">{{ p.prefix }}-{{ p.invoice_number }}</td>

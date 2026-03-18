@@ -64,7 +64,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let s of sales" [class.sin-registro]="s.is_day_without_record">
-          <td data-label="Fecha" class="mono">{{ s.sale_date | date:'dd/MM/yyyy' }}</td>
+          <td data-label="Fecha" class="mono">{{ s.sale_date | date:'dd/MM/yyyy':'UTC' }}</td>
           <td data-label="Tienda">
             <span class="badge badge-teal">{{ s.store?.code }}</span>
             {{ s.store?.name }}
