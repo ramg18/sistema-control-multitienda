@@ -6,6 +6,7 @@ import { AuditResult } from '../core/models/models';
 @Component({
   selector: 'app-auditoria',
   templateUrl: './auditoria.component.html',
+  styleUrls: ['./auditoria.component.scss']
 })
 export class AuditoriaComponent implements OnInit {
   form!: FormGroup;
@@ -26,7 +27,16 @@ export class AuditoriaComponent implements OnInit {
   }
 
   search(): void {
-    if (this.form.invalid) return;
+    console.log('Botón buscar presionado', this.form.value);
+    
+    if (this.form.invalid) {
+      console.warn('El formulario es inválido. Errores:', this.form.errors);
+      console.warn('Control FROM:', this.form.get('from')?.errors);
+      console.warn('Control TO:', this.form.get('to')?.errors);
+      alert('Por favor selecciona un rango de fechas válido.');
+      return;
+    }
+    
     this.loading  = true;
     this.searched = false;
     this.api.get<AuditResult[]>('audit/missing-days', this.form.value).subscribe({
