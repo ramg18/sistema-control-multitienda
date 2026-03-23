@@ -3,7 +3,7 @@
     <h2 class="page-title">Ventas</h2>
     <p class="page-subtitle">{{ total | number }} registros · Año {{ filters.year }}</p>
   </div>
-  <button class="btn btn-primary" (click)="openForm()">
+  <button class="btn btn-primary" (click)="openForm()" *ngIf="canEdit">
     <span>+</span> Nueva Venta
   </button>
 </div>
@@ -59,7 +59,7 @@
           <th class="text-right">Base Gravable</th>
           <th>Ops.</th>
           <th>Fuente</th>
-          <th>Acciones</th>
+          <th *ngIf="canEdit">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -87,7 +87,7 @@
               {{ s.source === 'manual' ? 'Manual' : 'n8n OCR' }}
             </span>
           </td>
-          <td data-label="Acciones">
+          <td data-label="Acciones" *ngIf="canEdit">
             <div class="d-flex gap-12" style="justify-content: flex-end;">
               <button class="btn btn-icon btn-sm" (click)="openForm(s)" title="Editar">✏️</button>
               <button class="btn btn-icon btn-sm" (click)="deleteSale(s)" title="Eliminar" style="color:var(--danger)">🗑</button>
@@ -95,7 +95,7 @@
           </td>
         </tr>
         <tr *ngIf="sales.length === 0">
-          <td colspan="10">
+          <td [attr.colspan]="canEdit ? 10 : 9">
             <div class="empty-state">
               <div class="empty-icon">🧾</div>
               <div class="empty-title">Sin registros</div>
@@ -104,14 +104,15 @@
           </td>
         </tr>
       </tbody>
-      <tfoot *ngIf="sales.length > 0" style="background-color: var(--card-bg); border-top: 2px solid var(--border-color);">
-        <tr>
-          <td colspan="4" class="text-right" style="font-weight: 600; padding-right: 1rem;">Total esta página:</td>
-          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalWithTax | currencyCol }}</td>
-          <td class="text-right td-amount text-muted" style="font-weight: 600;">{{ currentTotalIva | currencyCol }}</td>
-          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalBase | currencyCol }}</td>
-          <td class="text-right mono" style="font-weight: 600; color: var(--text-main);">{{ currentTotalOps }}</td>
-          <td colspan="2"></td>
+      <tfoot *ngIf="sales.length > 0">
+        <tr style="background-color: var(--bg-hover); border-top: 2px solid var(--border);">
+          <td colspan="4" class="text-right fw-700" style="padding-right: 16px;">Total Página:</td>
+          <td data-label="Total c/IVA" class="text-right td-amount fw-700">{{ pageTotals.total | currencyCol }}</td>
+          <td data-label="IVA (19%)" class="text-right td-amount fw-700 text-muted">{{ pageTotals.tax | currencyCol }}</td>
+          <td data-label="Base Gravable" class="text-right td-amount fw-700">{{ pageTotals.base | currencyCol }}</td>
+          <td data-label="Ops." class="mono text-right fw-700">{{ pageTotals.ops }}</td>
+          <td colspan="1" *ngIf="!canEdit"></td>
+          <td colspan="2" *ngIf="canEdit"></td>
         </tr>
       </tfoot>
     </table>

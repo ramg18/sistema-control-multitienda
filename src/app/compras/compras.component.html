@@ -3,7 +3,7 @@
     <h2 class="page-title">Compras</h2>
     <p class="page-subtitle">{{ total | number }} registros · Año {{ filters.year }}</p>
   </div>
-  <button class="btn btn-primary" (click)="openForm()">+ Nueva Compra</button>
+  <button class="btn btn-primary" (click)="openForm()" *ngIf="canEdit">+ Nueva Compra</button>
 </div>
 
 <div class="card mb-24" *ngIf="showForm">
@@ -49,21 +49,21 @@
           <th class="text-right">Total</th>
           <th class="text-right">Retenciones</th>
           <th class="text-right">Neto a Pagar</th>
-          <th>Acciones</th>
+          <th *ngIf="canEdit">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let p of purchases">
-          <td class="mono">{{ p.purchase_date | date:'dd/MM/yyyy':'UTC' }}</td>
-          <td><span class="badge badge-teal">{{ p.store?.code }}</span> {{ p.store?.name }}</td>
-          <td>{{ p.supplier?.name }}</td>
-          <td class="mono">{{ p.prefix }}-{{ p.invoice_number }}</td>
-          <td class="text-right td-amount">{{ p.subtotal | currencyCol }}</td>
-          <td class="text-right td-amount muted">{{ p.tax_amount | currencyCol }}</td>
-          <td class="text-right td-amount"><strong>{{ p.total | currencyCol }}</strong></td>
-          <td class="text-right td-amount text-danger">-{{ p.total_retentions | currencyCol }}</td>
-          <td class="text-right td-amount"><strong>{{ p.net_paid | currencyCol }}</strong></td>
-          <td>
+          <td class="mono" data-label="Fecha">{{ p.purchase_date | date:'dd/MM/yyyy':'UTC' }}</td>
+          <td data-label="Tienda"><span class="badge badge-teal">{{ p.store?.code }}</span> {{ p.store?.name }}</td>
+          <td data-label="Proveedor">{{ p.supplier?.name }}</td>
+          <td class="mono" data-label="Factura">{{ p.prefix }}-{{ p.invoice_number }}</td>
+          <td class="text-right td-amount" data-label="Subtotal">{{ p.subtotal | currencyCol }}</td>
+          <td class="text-right td-amount muted" data-label="IVA">{{ p.tax_amount | currencyCol }}</td>
+          <td class="text-right td-amount" data-label="Total"><strong>{{ p.total | currencyCol }}</strong></td>
+          <td class="text-right td-amount text-danger" data-label="Retenciones">-{{ p.total_retentions | currencyCol }}</td>
+          <td class="text-right td-amount" data-label="Neto a Pagar"><strong>{{ p.net_paid | currencyCol }}</strong></td>
+          <td data-label="Acciones" *ngIf="canEdit">
             <div class="d-flex gap-12">
               <button class="btn btn-icon btn-sm" (click)="openForm(p)" title="Editar">✏️</button>
               <button class="btn btn-icon btn-sm" (click)="delete(p)" title="Eliminar" style="color:var(--danger)">🗑</button>
@@ -71,7 +71,7 @@
           </td>
         </tr>
         <tr *ngIf="purchases.length === 0">
-          <td colspan="10">
+          <td [attr.colspan]="canEdit ? 10 : 9">
             <div class="empty-state">
               <div class="empty-icon">🛒</div>
               <div class="empty-title">Sin registros</div>
@@ -80,15 +80,15 @@
           </td>
         </tr>
       </tbody>
-      <tfoot *ngIf="purchases.length > 0" style="background-color: var(--card-bg); border-top: 2px solid var(--border-color);">
-        <tr>
-          <td colspan="4" class="text-right" style="font-weight: 600; padding-right: 1rem;">Total esta página:</td>
-          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalSubtotal | currencyCol }}</td>
-          <td class="text-right td-amount text-muted" style="font-weight: 600;">{{ currentTotalIva | currencyCol }}</td>
-          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotal | currencyCol }}</td>
-          <td class="text-right td-amount text-danger" style="font-weight: 600;">-{{ currentTotalRetentions | currencyCol }}</td>
-          <td class="text-right td-amount" style="font-weight: 600; color: var(--text-main);">{{ currentTotalNetPaid | currencyCol }}</td>
-          <td></td>
+      <tfoot *ngIf="purchases.length > 0">
+        <tr style="background-color: var(--bg-hover); border-top: 2px solid var(--border);">
+          <td colspan="4" class="text-right fw-700" style="padding-right: 16px;">Total Página:</td>
+          <td data-label="Subtotal" class="text-right td-amount fw-700">{{ currentTotalSubtotal | currencyCol }}</td>
+          <td data-label="IVA" class="text-right td-amount text-muted fw-700">{{ currentTotalIva | currencyCol }}</td>
+          <td data-label="Total" class="text-right td-amount fw-700">{{ currentTotal | currencyCol }}</td>
+          <td data-label="Retenciones" class="text-right td-amount text-danger fw-700">-{{ currentTotalRetentions | currencyCol }}</td>
+          <td data-label="Neto a Pagar" class="text-right td-amount fw-700">{{ currentTotalNetPaid | currencyCol }}</td>
+          <td *ngIf="canEdit"></td>
         </tr>
       </tfoot>
     </table>

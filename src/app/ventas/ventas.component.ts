@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../core/services/api.service';
+import { AuthService } from '../core/services/auth.service';
 import { Sale, PaginatedResponse, Store, TaxRate } from '../core/models/models';
 
 @Component({
@@ -38,7 +39,21 @@ export class VentasComponent implements OnInit {
     { v: 'TC', l: 'T. Crédito' }, { v: 'VA', l: 'Vale' },
   ];
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService) {}
+
+  get canEdit(): boolean {
+    return !this.auth.isCashier;
+  }
+
+  get pageTotals() {
+    return this.sales.reduce((acc, s) => {
+      acc.total += Number(s.total_with_tax) || 0;
+      acc.tax += Number(s.tax_amount) || 0;
+      acc.base += Number(s.taxable_base) || 0;
+      acc.ops += Number(s.operations_count) || 0;
+      return acc;
+    }, { total: 0, tax: 0, base: 0, ops: 0 });
+  }
 
   ngOnInit(): void {
     this.loadCatalogs();

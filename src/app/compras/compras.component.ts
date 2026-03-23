@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../core/services/api.service';
+import { AuthService } from '../core/services/auth.service';
 import { Purchase, PaginatedResponse, Store, Supplier } from '../core/models/models';
 
 @Component({
@@ -26,7 +27,11 @@ export class ComprasComponent implements OnInit {
     { v: '10', l: 'Octubre' }, { v: '11', l: 'Noviembre' }, { v: '12', l: 'Diciembre' },
   ];
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService) {}
+
+  get canEdit(): boolean {
+    return !this.auth.isCashier;
+  }
 
   ngOnInit(): void {
     this.api.get<Store[]>('stores').subscribe(s => this.stores = s);
