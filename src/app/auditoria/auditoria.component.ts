@@ -13,6 +13,7 @@ export class AuditoriaComponent implements OnInit {
   results: AuditResult[] = [];
   loading  = false;
   searched = false;
+  debugError = '';
 
   today    = new Date().toISOString().split('T')[0];
   firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
@@ -27,21 +28,28 @@ export class AuditoriaComponent implements OnInit {
   }
 
   search(): void {
-    console.log('Botón buscar presionado', this.form.value);
+    this.debugError = '';
     
     if (this.form.invalid) {
-      console.warn('El formulario es inválido. Errores:', this.form.errors);
-      console.warn('Control FROM:', this.form.get('from')?.errors);
-      console.warn('Control TO:', this.form.get('to')?.errors);
-      alert('Por favor selecciona un rango de fechas válido.');
+      this.debugError = 'El formulario tiene errores de validación. Selecciona ambas fechas.';
       return;
     }
     
     this.loading  = true;
     this.searched = false;
-    this.api.get<AuditResult[]>('audit/missing-days', this.form.value).subscribe({
+    
+    // Parse values in case datepicker sends Date objects
+    const values = this.form.value;
+    const fromStr = values.from instanceof Date ? values.from.toISOString().split('T')[0] : values.from;
+    const toStr = values.to instanceof Date ? values.to.toISOString().split('T')[0] : values.to;
+
+    this.api.get<AuditResult[]>('audit/missing-days', { from: fromStr, to: toStr }).subscribe({
       next: res => { this.results = res; this.loading = false; this.searched = true; },
-      error: () => { this.loading = false; },
+      error: (err) => { 
+        this.loading = false; 
+        this.debugError = 'Error HTTP del API: ' + (err.message || 'Error del servidor');
+        console.error('API Error:', err);
+      },
     });
   }
 

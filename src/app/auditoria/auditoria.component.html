@@ -10,13 +10,21 @@
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="search()">
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" style="position: relative;">
           <label class="form-label">Desde *</label>
-          <input type="date" class="form-control" formControlName="from" />
+          <div class="d-flex" style="align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-main); padding-right: 8px;">
+            <input matInput [matDatepicker]="pickerFrom" class="form-control" formControlName="from" style="border: none; background: transparent; flex: 1" />
+            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+          </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="position: relative;">
           <label class="form-label">Hasta *</label>
-          <input type="date" class="form-control" formControlName="to" />
+          <div class="d-flex" style="align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-main); padding-right: 8px;">
+            <input matInput [matDatepicker]="pickerTo" class="form-control" formControlName="to" style="border: none; background: transparent; flex: 1" />
+            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+          </div>
         </div>
         <div class="form-group" style="justify-content:flex-end">
           <label class="form-label" style="visibility:hidden">-</label>
@@ -24,6 +32,11 @@
             {{ loading ? 'Buscando...' : '🔍 Buscar' }}
           </button>
         </div>
+      </div>
+      
+      <!-- Debug Error Box -->
+      <div *ngIf="debugError" class="alert alert-danger mt-12" style="margin-top: 16px;">
+        <strong>Error:</strong> {{ debugError }}
       </div>
     </form>
   </div>
