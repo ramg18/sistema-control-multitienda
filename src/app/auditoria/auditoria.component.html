@@ -28,7 +28,7 @@
         </div>
         <div class="form-group" style="justify-content:flex-end">
           <label class="form-label" style="visibility:hidden">-</label>
-          <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <button type="button" class="btn btn-primary" [disabled]="loading" (click)="search()">
             {{ loading ? 'Buscando...' : '🔍 Buscar' }}
           </button>
         </div>
