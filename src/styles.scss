@@ -479,27 +479,55 @@ select.form-control { cursor: pointer; }
 .pagination {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 16px 24px;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px 0;
   border-top: 1px solid var(--border);
 
   .page-btn {
-    width: 32px; height: 32px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: transparent;
+    width: 48px; 
+    height: 48px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: #fff;
     cursor: pointer;
-    font-size: 13px;
-    color: var(--text-secondary);
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-main);
     transition: var(--transition);
-    display: flex; align-items: center; justify-content: center;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 
-    &:hover { background: var(--bg-hover); }
-    &.active { background: var(--brand-emerald); color: #fff; border-color: var(--brand-emerald); }
-    &:disabled { opacity: 0.4; cursor: not-allowed; }
+    &:hover:not(:disabled) { 
+      background: var(--brand-indigo-light, #e0e7ff); 
+      color: var(--brand-indigo); 
+      border-color: var(--brand-indigo); 
+    }
+    
+    &.active { 
+      background: var(--brand-emerald); 
+      color: #fff; 
+      border-color: var(--brand-emerald); 
+    }
+    
+    &:disabled { 
+      opacity: 0.4; 
+      cursor: not-allowed; 
+      background: var(--bg-hover); 
+    }
   }
 
-  .page-info { font-size: 12px; color: var(--text-muted); margin: 0 8px; }
+  .page-info { 
+    font-size: 15px; 
+    font-weight: 600;
+    color: var(--text-main); 
+    background: var(--bg-hover);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+  }
 }
 
 /* ── Angular Material Overrides ───────────────────────────────── */
@@ -638,13 +666,25 @@ select.form-control { cursor: pointer; }
 
   /* Paginación Mobile */
   .pagination {
-    flex-direction: column;
-    padding: 16px 12px;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 8px;
+    gap: 8px;
     
-    .page-info { order: -1; }
-    div { display: flex; gap: 8px; width: 100%; }
-    .page-btn { flex: 1; }
+    .page-info { 
+      flex: 1; 
+      justify-content: center;
+      text-align: center;
+      font-size: 14px;
+      padding: 0;
+    }
+    
+    .page-btn {
+      width: 56px; 
+      height: 56px;
+      flex-shrink: 0;
+    }
   }
 
   /* Mostrar botón de menú en móviles */
