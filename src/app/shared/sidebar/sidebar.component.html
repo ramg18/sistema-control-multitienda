@@ -1,98 +1,77 @@
 <div class="sidebar-overlay" *ngIf="isOpen" (click)="close.emit()"></div>
-<nav class="sidebar flex flex-col h-full bg-sidebar-bg border-r border-sidebar-border" [class.open]="isOpen">
-  
-  <!-- Logo Section -->
-  <div class="flex items-center gap-3 px-6 py-8 border-b border-sidebar-border">
-    <div class="text-3xl text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">⬡</div>
-    <div class="flex flex-col">
-      <div class="font-[Syne] text-lg font-extrabold text-slate-100 tracking-wide">MultiTienda</div>
-      <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">Control de Tiendas</div>
+<nav class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-brand">
+    <div class="brand-icon">⬡</div>
+    <div>
+      <div class="brand-name">MultiTienda</div>
+      <div class="brand-sub">Control de Tiendas</div>
     </div>
   </div>
 
-  <!-- Menu Scrollable Area -->
-  <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-800">
-    
-    <!-- Section: Principal -->
-    <div class="flex flex-col gap-1.5">
-      <div class="text-[10px] font-bold tracking-[1.5px] text-slate-500 px-3 pb-2 uppercase">PRINCIPAL</div>
-      
-      <a routerLink="/dashboard" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">📊</span>
-        <span>Dashboard</span>
-      </a>
-      
-      <a routerLink="/ventas" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">🧾</span>
-        <span>Ventas</span>
-      </a>
-
-      <a routerLink="/compras" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">🛒</span>
-        <span>Compras</span>
-      </a>
-
-      <a routerLink="/proveedores" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">🤝</span>
-        <span>Proveedores</span>
-      </a>
-
-    </div>
-
-    <!-- Section: Análisis -->
-    <div class="flex flex-col gap-1.5">
-      <div class="text-[10px] font-bold tracking-[1.5px] text-slate-500 px-3 pb-2 uppercase pt-2">ANÁLISIS</div>
-      
-      <a routerLink="/reportes" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">📈</span>
-        <span>Reportes Estáticos</span>
-      </a>
-      
-      <a routerLink="/analitica" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">💼</span>
-        <span>Análisis Gerencial</span>
-      </a>
-
-      <a routerLink="/auditoria" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">🔍</span>
-        <span>Auditoría</span>
-      </a>
-    </div>
-
-    <!-- Section: Configuración -->
-    <div class="flex flex-col gap-1.5" *ngIf="isAdmin">
-      <div class="text-[10px] font-bold tracking-[1.5px] text-slate-500 px-3 pb-2 uppercase pt-2">ADMINISTRACIÓN</div>
-      
-      <a routerLink="/configuracion/tiendas" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">🏪</span>
-        <span>Tiendas</span>
-      </a>
-
-      <a routerLink="/configuracion/usuarios" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">👥</span>
-        <span>Usuarios</span>
-      </a>
-      
-      <a routerLink="/configuracion" routerLinkActive="bg-emerald-500/10 text-emerald-400 font-semibold shadow-[inset_3px_0_0_#10b981]" class="flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 font-medium hover:bg-slate-800 hover:text-white transition-all duration-200 group" [routerLinkActiveOptions]="{exact: true}" (click)="close.emit()">
-        <span class="text-lg group-hover:scale-110 transition-transform duration-200">⚙️</span>
-        <span>Ajustes</span>
-      </a>
-    </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">PRINCIPAL</div>
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/ventas" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">🧾</span>
+      <span>Ventas</span>
+    </a>
+    <a routerLink="/compras" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">🛒</span>
+      <span>Compras</span>
+    </a>
+    <a routerLink="/proveedores" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">🤝</span>
+      <span>Proveedores</span>
+    </a>
   </div>
 
-  <!-- User Footer -->
-  <div class="sidebar-footer flex items-center gap-3 p-5 border-t border-sidebar-border mt-auto bg-slate-900/50">
-    <div class="flex items-center gap-3 flex-1 min-w-0">
-      <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold shadow-lg">
-        {{ userInitials }}
-      </div>
-      <div class="flex flex-col truncate">
-        <span class="text-sm font-semibold text-slate-200 truncate">{{ userName }}</span>
-        <span class="text-[11px] text-slate-500 font-medium mt-0.5">{{ roleLabel }}</span>
+  <div class="sidebar-section">
+    <div class="sidebar-label">ANÁLISIS</div>
+    <a routerLink="/reportes" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">📈</span>
+      <span>Reportes Estáticos</span>
+    </a>
+    <a routerLink="/analitica" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">💼</span>
+      <span>Análisis Gerencial</span>
+    </a>
+    <a routerLink="/auditoria" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">🔍</span>
+      <span>Auditoría</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section" *ngIf="isAdmin">
+    <div class="sidebar-label">ADMINISTRACIÓN</div>
+    <a routerLink="/configuracion/tiendas" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">🏪</span>
+      <span>Tiendas</span>
+    </a>
+    <a routerLink="/configuracion/usuarios" routerLinkActive="active" class="nav-item" (click)="close.emit()">
+      <span class="nav-icon">👥</span>
+      <span>Usuarios</span>
+    </a>
+    <a routerLink="/configuracion" routerLinkActive="active" class="nav-item" [routerLinkActiveOptions]="{exact: true}" (click)="close.emit()">
+      <span class="nav-icon">⚙️</span>
+      <span>Ajustes</span>
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">{{ userInitials }}</div>
+      <div class="user-details">
+        <div class="user-name">{{ userName }}</div>
+        <div class="user-role">{{ roleLabel }}</div>
       </div>
     </div>
-    <button class="flex-shrink-0 p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all" (click)="logout()" title="Cerrar sesión">
-      <i class="feather icon-log-out text-lg"></i>
+    <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:20px; height:20px">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+      </svg>
     </button>
   </div>
 </nav>
