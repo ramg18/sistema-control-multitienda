@@ -44,14 +44,6 @@
           [class.btn-secondary]="activeTab !== 'impuestos'" (click)="switchTab('impuestos')">
     Impuestos
   </button>
-  <button class="btn" [class.btn-primary]="activeTab === 'cartera'"
-          [class.btn-secondary]="activeTab !== 'cartera'" (click)="switchTab('cartera')">
-    Cartera CxP
-  </button>
-  <button class="btn" [class.btn-primary]="activeTab === 'rendimiento'"
-          [class.btn-secondary]="activeTab !== 'rendimiento'" (click)="switchTab('rendimiento')">
-    Análisis Vendedores
-  </button>
 </div>
 
 <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
