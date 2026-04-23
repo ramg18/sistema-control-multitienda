@@ -19,11 +19,47 @@
   </div>
 </div>
 
+<!-- EXPORTAR EXCEL VENTAS DETALLADAS -->
+<div class="card" *ngIf="activeTab === 'ventas'" style="margin-bottom: 1rem;">
+  <div style="display:flex; align-items:flex-end; gap:1rem; flex-wrap:wrap; padding:0.25rem 0;">
+    <div>
+      <label class="form-label">Mes</label>
+      <select class="form-control" [(ngModel)]="exportMonth" style="min-width:130px;">
+        <option [ngValue]="null">Todos los meses</option>
+        <option [ngValue]="1">Enero</option>
+        <option [ngValue]="2">Febrero</option>
+        <option [ngValue]="3">Marzo</option>
+        <option [ngValue]="4">Abril</option>
+        <option [ngValue]="5">Mayo</option>
+        <option [ngValue]="6">Junio</option>
+        <option [ngValue]="7">Julio</option>
+        <option [ngValue]="8">Agosto</option>
+        <option [ngValue]="9">Septiembre</option>
+        <option [ngValue]="10">Octubre</option>
+        <option [ngValue]="11">Noviembre</option>
+        <option [ngValue]="12">Diciembre</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Tienda</label>
+      <select class="form-control" [(ngModel)]="exportStoreId" style="min-width:150px;">
+        <option [ngValue]="null">Todas las tiendas</option>
+        <option *ngFor="let s of stores" [ngValue]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" (click)="exportExcel()" [disabled]="exportLoading"
+            style="display:flex;align-items:center;gap:0.4rem;">
+      <span *ngIf="!exportLoading">⬇ Exportar Excel</span>
+      <span *ngIf="exportLoading">Descargando...</span>
+    </button>
+  </div>
+</div>
+
 <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
 
 <div class="card" *ngIf="!loading">
   <div class="data-table-wrap">
-    
+
     <!-- VENTAS MENSUALES -->
     <table class="data-table" *ngIf="activeTab === 'ventas'">
       <thead>
@@ -124,5 +160,6 @@
         </tr>
       </tbody>
     </table>
+
   </div>
 </div>

@@ -32,6 +32,9 @@
     <option *ngFor="let m of months" [value]="m.v">{{ m.l }}</option>
   </select>
   <button class="btn btn-secondary btn-sm" (click)="clearFilters()">Limpiar</button>
+  <button class="btn btn-primary btn-sm" (click)="exportExcel()" [disabled]="exportLoading">
+    {{ exportLoading ? 'Descargando...' : '⬇ Exportar Excel' }}
+  </button>
 </div>
 
 <div class="card">

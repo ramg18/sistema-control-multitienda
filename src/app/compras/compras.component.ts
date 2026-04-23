@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as XLSX from 'xlsx';
 import { ApiService } from '../core/services/api.service';
 import { AuthService } from '../core/services/auth.service';
 import { Purchase, PaginatedResponse, Store, Supplier } from '../core/models/models';
@@ -69,6 +70,45 @@ export class ComprasComponent implements OnInit {
   clearFilters(): void { this.filters = { store_id: '', month: '', year: new Date().getFullYear() }; this.applyFilters(); }
   prevPage(): void { if (this.page > 1) { this.page--; this.loadPurchases(); } }
   nextPage(): void { if (this.page < this.lastPage) { this.page++; this.loadPurchases(); } }
+
+  exportLoading = false;
+
+  exportExcel(): void {
+    this.exportLoading = true;
+    const params: Record<string, any> = { year: this.filters.year };
+    if (this.filters.store_id) params['store_id'] = this.filters.store_id;
+    if (this.filters.month)    params['month']    = this.filters.month;
+
+    this.api.get<{ data: any[] }>('reports/purchases-detail-export', params).subscribe({
+      next: (res) => {
+        const headers = [
+          'ID', 'Fecha', 'Tienda', 'Código', 'Proveedor', 'Prefijo', 'Número Factura',
+          'Subtotal', 'IVA', 'Total', 'Retenciones', 'Neto a Pagar',
+          'Detalle Retenciones', 'Observaciones',
+        ];
+        const rows = res.data.map(r => [
+          r.id, r.fecha, r.tienda, r.codigo_tienda, r.proveedor, r.prefijo, r.numero_factura,
+          r.subtotal, r.iva, r.total, r.retenciones, r.neto_a_pagar,
+          r.detalle_retenciones, r.observaciones,
+        ]);
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+        ws['!cols'] = [
+          {wch:6},{wch:12},{wch:20},{wch:8},{wch:22},{wch:10},{wch:16},
+          {wch:14},{wch:12},{wch:14},{wch:14},{wch:14},
+          {wch:35},{wch:25},
+        ];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Compras');
+        const store = this.stores.find(s => String(s.id) === String(this.filters.store_id));
+        const monthNames = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        const monthPart = this.filters.month ? `_${monthNames[+this.filters.month]}` : '';
+        const storePart = store ? `_${store.code}` : '';
+        XLSX.writeFile(wb, `Compras_${this.filters.year}${monthPart}${storePart}.xlsx`);
+        this.exportLoading = false;
+      },
+      error: () => { this.exportLoading = false; }
+    });
+  }
 
   get currentTotalSubtotal(): number { return this.purchases.reduce((sum, p) => sum + Number(p.subtotal || 0), 0); }
   get currentTotalIva(): number { return this.purchases.reduce((sum, p) => sum + Number(p.tax_amount || 0), 0); }
