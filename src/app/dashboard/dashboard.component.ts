@@ -173,6 +173,11 @@ export class DashboardComponent implements OnInit {
     };
   }
 
+  get expensesTotal(): number { return this.data?.expenses?.total ?? 0; }
+  get grossProfit(): number { return this.data?.profit_and_loss?.gross_profit ?? 0; }
+  get netProfit(): number { return this.data?.profit_and_loss?.net_profit ?? 0; }
+  get marginPct(): number { return this.data?.profit_and_loss?.margin_percentage ?? 0; }
+
   private buildStoreRows(d: DashboardData): void {
     const totalSales = d.sales.total_with_tax || 1;
     this.storeRows = d.sales.by_store.map(s => {
