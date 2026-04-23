@@ -58,10 +58,10 @@
       <div class="w-body">
         <div class="w-main-value">
           <span class="w-label">Nómina, Arriendo, Servicios...</span>
-          <span class="w-amount">{{ data.expenses?.total | currencyCol }}</span>
+          <span class="w-amount">{{ data!.expenses?.total | currencyCol }}</span>
         </div>
         <div class="w-breakdown">
-          <div class="w-row"><span>Utilidad Bruta:</span> <strong>{{ data.profit_and_loss?.gross_profit | currencyCol }}</strong></div>
+          <div class="w-row"><span>Utilidad Bruta:</span> <strong>{{ data!.profit_and_loss?.gross_profit | currencyCol }}</strong></div>
         </div>
       </div>
     </div>
@@ -75,12 +75,12 @@
       <div class="w-body">
         <div class="w-main-value">
           <span class="w-label">Beneficio Real</span>
-          <span class="w-amount">{{ data.profit_and_loss?.net_profit | currencyCol }}</span>
+          <span class="w-amount">{{ data!.profit_and_loss?.net_profit | currencyCol }}</span>
         </div>
         <div class="w-breakdown text-center mt-3">
-          <span class="status-badge" [class.badge-rose]="(data.profit_and_loss?.net_profit || 0) < 0"
-                                     [class.badge-emerald]="(data.profit_and_loss?.net_profit || 0) >= 0">
-            Margen: {{ data.profit_and_loss?.margin_percentage }}%
+          <span class="status-badge" [class.badge-rose]="(data!.profit_and_loss?.net_profit || 0) < 0"
+                                     [class.badge-emerald]="(data!.profit_and_loss?.net_profit || 0) >= 0">
+            Margen: {{ data!.profit_and_loss?.margin_percentage }}%
           </span>
         </div>
       </div>
