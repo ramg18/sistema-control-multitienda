@@ -1,0 +1,93 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Gastos Operativos</h2>
+    <p class="page-subtitle">Total: {{ totalAmount | currency:'COP':'symbol-narrow':'1.0-0' }} · Año {{ filters.year }}</p>
+  </div>
+  <button class="btn btn-primary" (click)="openForm()" *ngIf="canEdit">
+    <span>+</span> Nuevo Gasto
+  </button>
+</div>
+
+<!-- Form panel -->
+<div class="card mb-24" *ngIf="showForm">
+  <div class="card-header">
+    <div class="card-title">{{ editingExpense ? 'Editar Gasto' : 'Registrar Nuevo Gasto' }}</div>
+    <button class="btn btn-icon btn-sm" (click)="onFormCancelled()">✕</button>
+  </div>
+  <div class="card-body">
+    <app-gasto-form
+      [stores]="stores"
+      [categories]="categories"
+      [expense]="editingExpense"
+      (saved)="onFormSaved()"
+      (cancelled)="onFormCancelled()">
+    </app-gasto-form>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <select class="form-control filter-control" [(ngModel)]="filters.store_id" (change)="applyFilters()">
+    <option value="">Todas las tiendas</option>
+    <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+  </select>
+  <select class="form-control filter-control" [(ngModel)]="filters.month" (change)="applyFilters()">
+    <option value="">Todos los meses</option>
+    <option *ngFor="let m of months" [value]="m.v">{{ m.l }}</option>
+  </select>
+  <button class="btn btn-secondary btn-sm" (click)="clearFilters()">Limpiar</button>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tienda</th>
+          <th>Categoría</th>
+          <th>Referencia</th>
+          <th>Descripción</th>
+          <th class="text-right">Total</th>
+          <th *ngIf="canEdit">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="expenses.length === 0">
+          <td [attr.colspan]="canEdit ? 7 : 6" class="text-center text-muted py-24">
+            No hay gastos registrados en este periodo.
+          </td>
+        </tr>
+        <tr *ngFor="let ex of expenses">
+          <td>{{ ex.expense_date | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-8">
+              <div class="store-dot" [style.background]="ex.store?.color_code || '#64748b'"></div>
+              <span>{{ ex.store?.name }}</span>
+            </div>
+          </td>
+          <td><span class="badge" style="background:#f1f5f9;color:#475569;">{{ ex.category?.name }}</span></td>
+          <td><span class="text-muted">{{ ex.reference_number || '-' }}</span></td>
+          <td class="text-truncate" style="max-width: 200px;" [title]="ex.description">{{ ex.description || '-' }}</td>
+          <td class="text-right font-medium text-danger">{{ ex.amount | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td *ngIf="canEdit">
+            <div class="d-flex gap-12" style="justify-content: flex-end;">
+              <button class="btn btn-icon btn-sm" (click)="openForm(ex)" title="Editar">✏️</button>
+              <button class="btn btn-icon btn-sm" (click)="deleteExpense(ex.id)" title="Eliminar" style="color:var(--danger)">🗑</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot *ngIf="expenses.length > 0">
+        <tr>
+          <td colspan="5" class="text-right font-medium">TOTAL GENERAL</td>
+          <td class="text-right font-medium text-danger">{{ totalAmount | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td *ngIf="canEdit"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

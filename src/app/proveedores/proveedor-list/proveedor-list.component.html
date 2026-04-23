@@ -1,0 +1,66 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Directorio de Proveedores</h2>
+    <p class="page-subtitle">Gestiona la información de tus aliados comerciales</p>
+  </div>
+  <button class="btn btn-primary" (click)="openForm()" *ngIf="canEdit">
+    <span>+</span> Nuevo Proveedor
+  </button>
+</div>
+
+<!-- Form panel -->
+<div class="card mb-24" *ngIf="showForm">
+  <div class="card-header">
+    <div class="card-title">{{ editingSupplier ? 'Editar Proveedor' : 'Registrar Nuevo Proveedor' }}</div>
+    <button class="btn btn-icon btn-sm" (click)="onFormCancelled()">✕</button>
+  </div>
+  <div class="card-body">
+    <app-proveedor-form
+      [supplier]="editingSupplier"
+      (saved)="onFormSaved()"
+      (cancelled)="onFormCancelled()">
+    </app-proveedor-form>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre del Proveedor</th>
+          <th>NIT / Documento</th>
+          <th>Teléfono</th>
+          <th>Email</th>
+          <th>Dirección</th>
+          <th *ngIf="canEdit">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="suppliers.length === 0">
+          <td [attr.colspan]="canEdit ? 7 : 6" class="text-center text-muted py-24">
+            No hay proveedores registrados.
+          </td>
+        </tr>
+        <tr *ngFor="let sup of suppliers">
+          <td class="text-muted">#{{ sup.id }}</td>
+          <td class="font-medium">{{ sup.name }}</td>
+          <td>{{ sup.nit || '-' }}</td>
+          <td>{{ sup.phone || '-' }}</td>
+          <td>{{ sup.email || '-' }}</td>
+          <td class="text-truncate" style="max-width: 200px;" [title]="sup.address">{{ sup.address || '-' }}</td>
+          <td *ngIf="canEdit">
+            <div class="d-flex gap-12" style="justify-content: flex-end;">
+              <button class="btn btn-icon btn-sm" (click)="openForm(sup)" title="Editar">✏️</button>
+              <button class="btn btn-icon btn-sm" (click)="deleteSupplier(sup.id)" title="Eliminar" style="color:var(--danger)">🗑</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

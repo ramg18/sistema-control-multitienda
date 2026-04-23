@@ -1,0 +1,42 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-md-6 mb-16">
+      <label class="form-label">Nombre del Proveedor <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" formControlName="name" placeholder="Ej: Distribuidora XYZ">
+      <div class="text-danger small mt-1" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        El nombre es obligatorio
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-16">
+      <label class="form-label">NIT / Documento</label>
+      <input type="text" class="form-control" formControlName="nit" placeholder="Ej: 900.123.456-7">
+    </div>
+    
+    <div class="col-md-6 mb-16">
+      <label class="form-label">Teléfono de Contacto</label>
+      <input type="text" class="form-control" formControlName="phone" placeholder="Ej: 300 123 4567">
+    </div>
+
+    <div class="col-md-6 mb-16">
+      <label class="form-label">Correo Electrónico</label>
+      <input type="email" class="form-control" formControlName="email" placeholder="contacto@empresa.com">
+      <div class="text-danger small mt-1" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        El correo electrónico no es válido
+      </div>
+    </div>
+
+    <div class="col-md-12 mb-16">
+      <label class="form-label">Dirección Física</label>
+      <input type="text" class="form-control" formControlName="address" placeholder="Ej: Calle 123 # 45-67, Ciudad">
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-12 mt-24">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving">
+      <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+      {{ supplier ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </div>
+</form>

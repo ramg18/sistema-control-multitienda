@@ -53,6 +53,9 @@ import { UsuariosComponent } from './configuracion/usuarios/usuarios.component';
 // Shared Pipes
 import { CurrencyColPipe } from './shared/pipes/currency-col.pipe';
 import { PaymentMethodPipe } from './shared/pipes/payment-method.pipe';
+import { GastosComponent } from './gastos/gastos.component';
+import { GastoFormComponent } from './gastos/gasto-form/gasto-form.component';
+import { ReportePrincipalComponent } from './reportes/reporte-principal/reporte-principal.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +76,9 @@ import { PaymentMethodPipe } from './shared/pipes/payment-method.pipe';
     UsuariosComponent,
     CurrencyColPipe,
     PaymentMethodPipe,
+    GastosComponent,
+    GastoFormComponent,
+    ReportePrincipalComponent,
   ],
   imports: [
     BrowserModule,

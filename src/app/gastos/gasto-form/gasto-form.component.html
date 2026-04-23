@@ -1,0 +1,67 @@
+<div class="alert alert-danger mb-16" *ngIf="error">{{ error }}</div>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Fecha del Gasto <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" formControlName="expense_date">
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Tienda <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="store_id">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Categoría <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="expense_category_id">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Monto COP <span class="text-danger">*</span></label>
+        <div class="input-icon-wrap">
+          <span class="icon">$</span>
+          <input type="number" class="form-control" formControlName="amount" min="0" step="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>N° Referencia / Recibo / Factura</label>
+        <input type="text" class="form-control" formControlName="reference_number" placeholder="Opcional">
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Descripción u Observaciones</label>
+        <input type="text" class="form-control" formControlName="description">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions mt-24">
+    <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="saving">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+      <div class="spinner spinner-sm" *ngIf="saving"></div>
+      <span *ngIf="!saving">Guardar Gasto</span>
+    </button>
+  </div>
+</form>

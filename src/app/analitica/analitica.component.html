@@ -1,0 +1,280 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Reportes Gerenciales Avanzados</h2>
+    <p class="page-subtitle">P&G, Flujos, Analítica de Cartera e Impuestos</p>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 200px;">
+      <label class="form-label" style="display:block; margin-bottom:0.5rem; font-weight:600;">Fecha Desde</label>
+      <input type="date" class="form-control" [(ngModel)]="startDate">
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <label class="form-label" style="display:block; margin-bottom:0.5rem; font-weight:600;">Fecha Hasta</label>
+      <input type="date" class="form-control" [(ngModel)]="endDate">
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <label class="form-label" style="display:block; margin-bottom:0.5rem; font-weight:600;">Tienda</label>
+      <select class="form-control" [(ngModel)]="storeId">
+        <option value="">Consolidado (Todas)</option>
+        <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+    <div>
+      <button class="btn btn-primary" (click)="loadData()" [disabled]="loading">
+        <i class="feather icon-filter"></i> Generar Reporte
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-switcher" style="margin-bottom: 1.5rem; justify-content: flex-start;">
+  <button class="btn" [class.btn-primary]="activeTab === 'pyg'"
+          [class.btn-secondary]="activeTab !== 'pyg'" (click)="switchTab('pyg')">
+    P&G Detallado
+  </button>
+  <button class="btn" [class.btn-primary]="activeTab === 'flujo'"
+          [class.btn-secondary]="activeTab !== 'flujo'" (click)="switchTab('flujo')">
+    Flujo de Caja
+  </button>
+  <button class="btn" [class.btn-primary]="activeTab === 'impuestos'"
+          [class.btn-secondary]="activeTab !== 'impuestos'" (click)="switchTab('impuestos')">
+    Impuestos
+  </button>
+  <button class="btn" [class.btn-primary]="activeTab === 'cartera'"
+          [class.btn-secondary]="activeTab !== 'cartera'" (click)="switchTab('cartera')">
+    Cartera CxP
+  </button>
+  <button class="btn" [class.btn-primary]="activeTab === 'rendimiento'"
+          [class.btn-secondary]="activeTab !== 'rendimiento'" (click)="switchTab('rendimiento')">
+    Análisis Vendedores
+  </button>
+</div>
+
+<div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+
+<div class="card" *ngIf="!loading">
+  <div class="data-table-wrap">
+    
+    <!-- P&G DETALLADO -->
+    <div *ngIf="activeTab === 'pyg' && pygReport" style="padding: 1rem;">
+      <h3 style="margin-bottom: 1rem;">Estado de Resultados (P&G)</h3>
+      <table class="data-table">
+        <tbody>
+          <tr>
+            <td><strong>(+) Ventas Brutas</strong></td>
+            <td class="text-right td-amount">{{ pygReport.revenues.gross_sales | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+          <tr>
+            <td><strong>(-) Costo de Ventas (Compras)</strong></td>
+            <td class="text-right td-amount text-danger">{{ pygReport.costs.cogs | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td><strong>(=) Utilidad Bruta</strong></td>
+            <td class="text-right td-amount"><strong>{{ pygReport.gross_profit | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><br/><strong>(-) Gastos Operativos</strong></td>
+          </tr>
+          <tr *ngFor="let exp of pygReport.expenses.breakdown">
+            <td style="padding-left: 2rem;">{{ exp.category }}</td>
+            <td class="text-right td-amount text-danger">{{ exp.amount | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td><strong>Total Gastos Operativos</strong></td>
+            <td class="text-right td-amount text-danger"><strong>{{ pygReport.expenses.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr class="total-row" [style.background]="pygReport.net_profit >= 0 ? 'var(--emerald)' : 'var(--red)'" style="color:white;">
+            <td><strong>(=) UTILIDAD NETA</strong></td>
+            <td class="text-right td-amount">
+              <strong>{{ pygReport.net_profit | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              <span style="display:block; font-size: 0.8em;">Margen: {{ pygReport.margin_percentage }}%</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FLUJO DE CAJA -->
+    <div *ngIf="activeTab === 'flujo' && cashFlowReport" style="padding: 1rem;">
+      <h3 style="margin-bottom: 1rem;">Flujo de Caja Real</h3>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex:1; min-width: 300px;">
+          <table class="data-table">
+            <thead><tr><th colspan="2" style="background:var(--emerald); color:white;">ENTRADAS (INGRESOS REALES)</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let inc of cashFlowReport.incomings.breakdown">
+                <td>{{ inc.method | titlecase }}</td>
+                <td class="text-right td-amount">{{ inc.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Total Entradas</strong></td>
+                <td class="text-right td-amount"><strong>{{ cashFlowReport.incomings.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="flex:1; min-width: 300px;">
+          <table class="data-table">
+            <thead><tr><th colspan="2" style="background:var(--red); color:white;">SALIDAS (GASTOS Y PAGOS AP)</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Pagos Efectivos Gastos Operativos</td>
+                <td class="text-right td-amount">{{ cashFlowReport.outgoings.expenses | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              </tr>
+              <tr *ngFor="let out of cashFlowReport.outgoings.ap_breakdown">
+                <td>Pago Proveedor ({{ out.payment_method | titlecase }})</td>
+                <td class="text-right td-amount">{{ out.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Total Salidas</strong></td>
+                <td class="text-right td-amount"><strong>{{ cashFlowReport.outgoings.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;" class="total-row" [style.background]="cashFlowReport.net_cash_flow >= 0 ? 'var(--emerald)' : 'var(--red)'" style="color:white; padding: 1rem; border-radius: 8px;">
+        <strong>FLUJO DE CAJA NETO DEL PERIODO: </strong> <span class="pull-right">{{ cashFlowReport.net_cash_flow | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+      </div>
+    </div>
+
+    <!-- IMPUESTOS -->
+    <div *ngIf="activeTab === 'impuestos' && taxesReport" style="padding: 1rem;">
+      <h3 style="margin-bottom: 1rem;">Reporte Tributario (IVA y Retenciones)</h3>
+      <table class="data-table">
+        <tbody>
+          <tr>
+            <td colspan="2"><strong>IVA GENERADO (Ventas)</strong></td>
+          </tr>
+          <tr>
+            <td style="padding-left: 2rem;">Base Gravable Ventas</td>
+            <td class="text-right td-amount">{{ taxesReport.sales_tax.base | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td style="padding-left: 2rem;"><strong>(+) Total IVA Generado</strong></td>
+            <td class="text-right td-amount text-success"><strong>{{ taxesReport.sales_tax.generated | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><br/><strong>IVA DESCONTABLE (Compras)</strong></td>
+          </tr>
+          <tr>
+            <td style="padding-left: 2rem;">Base Gravable Compras</td>
+            <td class="text-right td-amount">{{ taxesReport.purchases_tax.base | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td style="padding-left: 2rem;"><strong>(-) Total IVA Descontable</strong></td>
+            <td class="text-right td-amount text-danger"><strong>{{ taxesReport.purchases_tax.deductible | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><br/><strong>RETENCIONES PRACTICADAS</strong></td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td style="padding-left: 2rem;"><strong>Total Retenciones</strong></td>
+            <td class="text-right td-amount"><strong>{{ taxesReport.purchases_tax.retentions | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr class="total-row" [style.background]="taxesReport.balance.status === 'por_pagar' ? 'var(--orange)' : 'var(--emerald)'" style="color:white;">
+            <td><strong>SALDO IVA {{ taxesReport.balance.status === 'por_pagar' ? '(A PAGAR DIAN)' : '(A FAVOR)' }}</strong></td>
+            <td class="text-right td-amount">
+              <strong>{{ taxesReport.balance.net_vat | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CARTERA -->
+    <div *ngIf="activeTab === 'cartera' && arApReport" style="padding: 1rem;">
+      <h3 style="margin-bottom: 1rem;">Cartera: Cuentas por Pagar (AP)</h3>
+      
+      <div style="display:flex; gap: 1rem; margin-bottom:1.5rem; flex-wrap: wrap;">
+        <div class="stat-card" style="flex:1; min-width:200px; background:#f8f9fa; padding:1rem; border-radius:8px; border-left:4px solid var(--primary);">
+          <div><strong>Corriente (No Vencido)</strong></div>
+          <div style="font-size:1.5rem; font-weight:bold;">{{ arApReport.accounts_payable.aging.current | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="stat-card" style="flex:1; min-width:200px; background:#f8f9fa; padding:1rem; border-radius:8px; border-left:4px solid var(--yellow);">
+          <div><strong>1 - 30 Días Vencido</strong></div>
+          <div style="font-size:1.5rem; font-weight:bold;">{{ arApReport.accounts_payable.aging['1_30'] | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="stat-card" style="flex:1; min-width:200px; background:#f8f9fa; padding:1rem; border-radius:8px; border-left:4px solid var(--orange);">
+          <div><strong>31 - 60 Días Vencido</strong></div>
+          <div style="font-size:1.5rem; font-weight:bold;">{{ arApReport.accounts_payable.aging['31_60'] | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+        <div class="stat-card" style="flex:1; min-width:200px; background:#f8f9fa; padding:1rem; border-radius:8px; border-left:4px solid var(--red);">
+          <div><strong>> 60 Días Vencido</strong></div>
+          <div style="font-size:1.5rem; font-weight:bold;">{{ arApReport.accounts_payable.aging['60_plus'] | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Proveedor</th>
+            <th>Factura</th>
+            <th>Vencimiento</th>
+            <th class="text-right">Saldo Deudor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ap of arApReport.accounts_payable.details">
+            <td>{{ ap.supplier }}</td>
+            <td>{{ ap.invoice }}</td>
+            <td>{{ ap.due_date || 'Sin Vencimiento' }}</td>
+            <td class="text-right td-amount"><strong>{{ ap.balance | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+          <tr *ngIf="arApReport.accounts_payable.details.length === 0">
+            <td colspan="4" class="text-center text-muted" style="padding: 2rem;">No hay cuentas por pagar registradas.</td>
+          </tr>
+          <tr class="total-row" *ngIf="arApReport.accounts_payable.details.length > 0">
+            <td colspan="3"><strong>TOTAL OBLIGACIONES POR PAGAR</strong></td>
+            <td class="text-right td-amount"><strong>{{ arApReport.accounts_payable.total_debt | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RENDIMIENTO -->
+    <div *ngIf="activeTab === 'rendimiento' && sellerReport" style="padding: 1rem;">
+      <h3 style="margin-bottom: 1rem;">Rendimiento de Vendedores</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Vendedor (Usuario)</th>
+            <th class="text-center">Operaciones</th>
+            <th class="text-right">Descuentos</th>
+            <th class="text-right">Total Ventas</th>
+            <th class="text-right">% Participación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of sellerReport.performance">
+            <td><strong>{{ s.name | uppercase }}</strong></td>
+            <td class="text-center">{{ s.operations }}</td>
+            <td class="text-right td-amount text-danger">{{ s.discounts | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td class="text-right td-amount text-success"><strong>{{ s.total_sales | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+            <td class="text-right" style="width: 200px;">
+              <div style="display:flex; align-items:center; justify-content:flex-end;">
+                <div style="width: 100px; background: #e9ecef; height: 10px; border-radius: 5px; margin-right: 10px; overflow:hidden;">
+                  <div style="background: var(--primary); height: 100%; transition: width 0.5s ease;" [style.width]="s.contribution_percent + '%'"></div>
+                </div>
+                <strong>{{ s.contribution_percent }}%</strong>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="sellerReport.performance.length === 0">
+            <td colspan="5" class="text-center text-muted" style="padding: 2rem;">No hay operaciones registradas en este periodo.</td>
+          </tr>
+          <tr class="total-row" *ngIf="sellerReport.performance.length > 0">
+            <td colspan="3"><strong>TOTAL CONSOLIDADO DEL PERIODO</strong></td>
+            <td class="text-right td-amount"><strong>{{ sellerReport.total_sales | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+            <td class="text-right"><strong>100.0%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

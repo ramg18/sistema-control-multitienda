@@ -1,0 +1,17 @@
+// Estilado local de analítica
+.stat-card {
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+}
+
+.td-amount {
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.total-row {
+  background: var(--light-gray, #f0f0f0);
+}

@@ -30,17 +30,45 @@
       <input type="text" class="form-control" formControlName="invoice_number" />
     </div>
     <div class="form-group">
-      <label class="form-label">Subtotal *</label>
-      <input type="number" class="form-control form-control-mono" formControlName="subtotal" />
+      <label class="form-label">Total Factura *</label>
+      <input type="number" class="form-control form-control-mono" formControlName="total_invoice" placeholder="Total a Pagar" />
     </div>
     <div class="form-group">
-      <label class="form-label">IVA</label>
-      <input type="number" class="form-control form-control-mono" formControlName="tax_amount" />
+      <label class="form-label">% IVA *</label>
+      <select class="form-control form-control-mono" formControlName="iva_percentage">
+        <option [ngValue]="19">19% (Estándar)</option>
+        <option [ngValue]="5">5% (Reducido)</option>
+        <option [ngValue]="0">0% (Exento)</option>
+      </select>
     </div>
   </div>
-  <div class="form-group">
-    <label class="form-label">Observaciones</label>
-    <input type="text" class="form-control" formControlName="observations" />
+
+  <div class="form-row bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4 items-center">
+    <div class="form-group flex-1 mb-0">
+      <label class="form-label text-xs text-slate-500 !mb-1">Base Gravable (Subtotal) Calculada</label>
+      <input type="number" class="form-control form-control-mono bg-transparent border-none text-slate-600 font-bold p-0" formControlName="subtotal" readonly tabindex="-1" />
+    </div>
+    <div class="form-group flex-1 mb-0">
+      <label class="form-label text-xs text-slate-500 !mb-1">IVA Deducido</label>
+      <input type="number" class="form-control form-control-mono bg-transparent border-none text-slate-600 font-bold p-0" formControlName="tax_amount" readonly tabindex="-1" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group" style="flex:2">
+      <label class="form-label">Observaciones</label>
+      <input type="text" class="form-control" formControlName="observations" />
+    </div>
+    <div class="form-group" style="flex:1">
+      <label class="form-label">Condición de Pago *</label>
+      <select class="form-control" formControlName="is_credit">
+        <option [ngValue]="false">Al Contado</option>
+        <option [ngValue]="true">A Crédito</option>
+      </select>
+    </div>
+    <div class="form-group" style="flex:1" *ngIf="form.get('is_credit')?.value">
+      <label class="form-label">Fecha de Vencimiento *</label>
+      <input type="date" class="form-control" formControlName="due_date" />
+    </div>
   </div>
 
   <!-- Retentions -->

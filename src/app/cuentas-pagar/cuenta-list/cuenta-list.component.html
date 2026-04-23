@@ -1,0 +1,147 @@
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Cuentas por Pagar a Proveedores</h2>
+    <p class="page-subtitle">Gestiona deudas y registra abonos a las facturas pendientes</p>
+  </div>
+  <button class="btn btn-primary shadow-md shadow-emerald-500/20" (click)="openNewForm()" *ngIf="canEdit">
+    <span>+</span> Nueva Deuda
+  </button>
+</div>
+
+<!-- Resumen -->
+<div style="display:flex; gap: 1rem; margin-bottom:1.5rem; flex-wrap: wrap;">
+  <div class="stat-card" style="flex:1; min-width:250px; background:white; padding:1.5rem; border-radius:12px; border-left:5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px;">🏦 Total Deuda Acumulada</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--text-dark);">{{ totalDeuda | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Monto histórico de deudas a proveedores</div>
+  </div>
+
+  <div class="stat-card" style="flex:1; min-width:250px; background:white; padding:1.5rem; border-radius:12px; border-left:5px solid var(--success, #10b981); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px;">✅ Total Abonado / Pagado</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--success, #10b981);">{{ totalAbonado | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Suma de todos los pagos realizados</div>
+  </div>
+
+  <div class="stat-card" style="flex:1; min-width:250px; background:white; padding:1.5rem; border-radius:12px; border-left:5px solid var(--danger, #ef4444); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px;">⚠️ Saldo Pendiente Real</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--danger, #ef4444);">{{ totalSaldo | currency:'COP':'symbol-narrow':'1.0-0' }}</div>
+    <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Balance final por liquidar</div>
+  </div>
+</div>
+
+<!-- Formulario para NUEVA Cuenta por Pagar -->
+<div class="card mb-24 border-emerald-500" *ngIf="showNewForm">
+  <div class="card-header bg-emerald-500 text-white">
+    <div class="card-title text-white">📝 Registrar Nueva Deuda a Proveedor</div>
+    <button class="btn btn-icon btn-sm text-white" (click)="onNewFormCancelled()">✕</button>
+  </div>
+  <div class="card-body">
+    <app-cuenta-form
+      [stores]="stores"
+      [suppliers]="suppliers"
+      (saved)="onNewFormSaved()"
+      (cancelled)="onNewFormCancelled()">
+    </app-cuenta-form>
+  </div>
+</div>
+
+<!-- Modal/Form de Pagos -->
+<div class="card mb-24 border-primary" *ngIf="showPaymentForm && selectedAccount">
+  <div class="card-header bg-primary text-white">
+    <div class="card-title text-white">💵 Registrar Abono / Pago a Proveedor</div>
+    <button class="btn btn-icon btn-sm text-white" (click)="onPaymentCancelled()">✕</button>
+  </div>
+  <div class="card-body">
+    <app-abono-form
+      [accountPayable]="selectedAccount"
+      (saved)="onPaymentSaved()"
+      (cancelled)="onPaymentCancelled()">
+    </app-abono-form>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="filter-bar">
+  <select class="form-control filter-control" [(ngModel)]="filters.store_id" (change)="applyFilters()">
+    <option value="">Todas las Tiendas</option>
+    <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+  </select>
+
+  <select class="form-control filter-control" [(ngModel)]="filters.supplier_id" (change)="applyFilters()">
+    <option value="">Todos los Proveedores</option>
+    <option *ngFor="let sup of suppliers" [value]="sup.id">{{ sup.name }}</option>
+  </select>
+
+  <select class="form-control filter-control" [(ngModel)]="filters.status" (change)="applyFilters()">
+    <option value="">Todos los Estados</option>
+    <option value="pending">Pendiente Total</option>
+    <option value="partial">Abono Parcial</option>
+    <option value="paid">Pagado Completo</option>
+  </select>
+
+  <button class="btn btn-secondary btn-sm" (click)="clearFilters()">Limpiar</button>
+</div>
+
+<!-- Tabla Principal AP -->
+<div class="card">
+  <div class="spinner-wrap" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div class="data-table-wrap" *ngIf="!loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Factura / Ref.</th>
+          <th>Proveedor</th>
+          <th>Tienda</th>
+          <th>Vence el</th>
+          <th class="text-right">Total Deuda</th>
+          <th class="text-right">Pagado</th>
+          <th class="text-right">Saldo Pend.</th>
+          <th class="text-center">Estado</th>
+          <th *ngIf="canEdit">Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="accountPayables.length === 0">
+          <td [attr.colspan]="canEdit ? 9 : 8" class="text-center text-muted py-24">
+            No hay facturas pendientes o cuentas en este criterio.
+          </td>
+        </tr>
+        
+        <tr *ngFor="let ap of accountPayables">
+          <td><span class="font-medium text-primary">#{{ ap.invoice_number || ap.id }}</span></td>
+          <td>{{ ap.supplier?.name || 'Desconocido' }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-8">
+              <div class="store-dot" [style.background]="'#64748b'"></div>
+              <span>{{ ap.store?.name }}</span>
+            </div>
+          </td>
+          <td>{{ ap.due_date | date:'dd/MM/yyyy' }}</td>
+          <td class="text-right text-muted">{{ ap.amount | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td class="text-right text-success">{{ (ap.amount - ap.balance) | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td class="text-right font-medium text-danger">{{ ap.balance | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td class="text-center">
+            <span class="badge" [ngClass]="{
+              'bg-success': ap.status === 'paid',
+              'bg-warning text-dark': ap.status === 'partial',
+              'bg-danger': ap.status === 'pending'
+            }">
+              {{ ap.status === 'paid' ? 'Pagado' : (ap.status === 'partial' ? 'Abono Parcial' : 'Pendiente') }}
+            </span>
+          </td>
+          <td *ngIf="canEdit">
+            <div class="d-flex gap-12" style="justify-content: flex-end;">
+              <!-- Solo permite abonar si el saldo es mayor a 0 -->
+              <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 12px;" 
+                (click)="openPaymentForm(ap)" 
+                [disabled]="ap.balance <= 0">
+                Abonar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

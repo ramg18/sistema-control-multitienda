@@ -165,7 +165,6 @@ export interface PurchaseRequest {
   retentions?: { retention_type_id: number; base: number; rate: number }[];
 }
 
-// ── Dashboard / Report Models ─────────────────────────────────
 export interface DashboardData {
   year: number;
   sales: {
@@ -182,6 +181,15 @@ export interface DashboardData {
     tax_deductible: number;
     total_retentions: number;
     by_store: { store_id: number; total: number; tax: number; store: Store }[];
+  };
+  expenses?: {
+    total: number;
+    by_store: { store_id: number; total: number; store: Store }[];
+  };
+  profit_and_loss?: {
+    gross_profit: number;
+    net_profit: number;
+    margin_percentage: number;
   };
   vat_balance: {
     generated: number;
@@ -250,4 +258,85 @@ export interface CreateUserRequest {
   password: string;
   role: 'admin' | 'store_admin' | 'cashier';
   store_id?: number | null;
+}
+
+// ── Accounts Payable Models ───────────────────────────────────
+export interface AccountPayable {
+  id: number;
+  store_id: number;
+  supplier_id: number;
+  purchase_id?: number | null;
+  invoice_number?: string | null;
+  amount: number;
+  balance: number;
+  issue_date: string;
+  due_date?: string | null;
+  status: 'pending' | 'partial' | 'paid' | 'cancelled';
+  notes?: string | null;
+  supplier?: Supplier;
+  store?: Store;
+  payments?: ApPayment[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ApPayment {
+  id: number;
+  account_payable_id: number;
+  user_id?: number | null;
+  payment_date: string;
+  amount: number;
+  payment_method?: string | null;
+  reference_number?: string | null;
+  notes?: string | null;
+  accountPayable?: AccountPayable;
+  user?: AppUser;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// ── Reports Models ────────────────────────────────────────────
+export interface ProfitAndLossReport {
+  period: { start: string; end: string };
+  revenues: { gross_sales: number; net_sales: number };
+  costs: { cogs: number };
+  gross_profit: number;
+  expenses: { total: number; breakdown: { category: string; amount: number }[] };
+  net_profit: number;
+  margin_percentage: number;
+}
+
+export interface CashFlowReport {
+  period: { start: string; end: string };
+  incomings: { total: number; breakdown: { method: string; total: number }[] };
+  outgoings: { total: number; expenses: number; ap_payments: number; ap_breakdown: { payment_method: string; total: number }[] };
+  net_cash_flow: number;
+}
+
+export interface TaxesReport {
+  period: { start: string; end: string };
+  sales_tax: { base: number; generated: number };
+  purchases_tax: { base: number; deductible: number; retentions: number };
+  balance: { net_vat: number; status: 'por_pagar' | 'a_favor' };
+}
+
+export interface ArApReport {
+  accounts_payable: {
+    total_debt: number;
+    aging: { current: number; '1_30': number; '31_60': number; '60_plus': number };
+    details: { id: number; supplier: string; invoice: string; balance: number; due_date: string }[];
+  };
+}
+
+export interface SellerPerformanceReport {
+  period: { start: string; end: string };
+  total_sales: number;
+  performance: {
+    user_id: number;
+    name: string;
+    total_sales: number;
+    operations: number;
+    discounts: number;
+    contribution_percent: number;
+  }[];
 }

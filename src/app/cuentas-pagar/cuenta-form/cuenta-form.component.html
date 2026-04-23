@@ -1,0 +1,58 @@
+<div *ngIf="error" class="alert alert-danger mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-lg text-sm">{{ error }}</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Tienda *</label>
+      <select class="form-control" formControlName="store_id">
+        <option value="">Selecciona tienda</option>
+        <option *ngFor="let s of stores" [value]="s.id">{{ s.name }}</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Proveedor *</label>
+      <select class="form-control" formControlName="supplier_id">
+        <option value="">Selecciona proveedor</option>
+        <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }} — {{ s.nit }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Número de Factura *</label>
+      <input type="text" class="form-control" formControlName="invoice_number" placeholder="Ej: FV-00123" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Monto de la Deuda *</label>
+      <input type="number" step="0.01" class="form-control font-mono" formControlName="amount" placeholder="0.00" />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Fecha de Emisión *</label>
+      <input type="date" class="form-control" formControlName="issue_date" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Fecha de Vencimiento *</label>
+      <input type="date" class="form-control" formControlName="due_date" />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Notas u Observaciones</label>
+    <textarea class="form-control" formControlName="notes" rows="2" placeholder="Información adicional sobre esta cuenta por pagar"></textarea>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
+    <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-lg text-sm font-semibold" (click)="cancelled.emit()">Cancelar</button>
+    <button type="button" class="btn btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md shadow-emerald-500/20" [disabled]="saving || form.invalid" (click)="onSubmit()">
+      {{ saving ? 'Guardando...' : 'Registrar Deuda' }}
+    </button>
+  </div>
+</form>
