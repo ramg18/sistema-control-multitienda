@@ -16,16 +16,16 @@
     <!-- Ventas -->
     <div class="widget-card widget-blue">
       <div class="w-header">
-        <h3 class="w-title">VENTAS CONSOLIDADAS</h3>
+        <h3 class="w-title">VENTAS NETAS</h3>
         <span class="w-icon">📈</span>
       </div>
       <div class="w-body">
         <div class="w-main-value">
-          <span class="w-label">Total Ventas (c/IVA)</span>
-          <span class="w-amount">{{ data.sales.total_with_tax | currencyCol }}</span>
+          <span class="w-label">Base Gravable (Sin Impuestos)</span>
+          <span class="w-amount">{{ data.sales.taxable_base | currencyCol }}</span>
         </div>
         <div class="w-breakdown">
-          <div class="w-row"><span>Base Gravable:</span> <strong>{{ data.sales.taxable_base | currencyCol }}</strong></div>
+          <div class="w-row"><span>Total Ventas (+IVA):</span> <strong>{{ data.sales.total_with_tax | currencyCol }}</strong></div>
           <div class="w-row"><span>IVA Generado:</span> <strong>{{ data.vat_balance.generated | currencyCol }}</strong></div>
           <div class="w-row"><span>Total Operaciones:</span> <strong>{{ data.sales.total_operations | number }}</strong></div>
         </div>
@@ -33,18 +33,55 @@
     </div>
 
     <!-- Compras -->
-    <div class="widget-card widget-green">
+    <div class="widget-card widget-yellow">
       <div class="w-header">
-        <h3 class="w-title">COMPRAS CONSOLIDADAS</h3>
+        <h3 class="w-title">COSTO MERCANCÍA</h3>
         <span class="w-icon">🛒</span>
       </div>
       <div class="w-body">
         <div class="w-main-value">
-          <span class="w-label">Total Compras</span>
+          <span class="w-label">Total Compras a Proveedor</span>
           <span class="w-amount">{{ data.purchases.total | currencyCol }}</span>
         </div>
         <div class="w-breakdown">
           <div class="w-row"><span>IVA Descontable:</span> <strong>{{ data.vat_balance.deductible | currencyCol }}</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gastos -->
+    <div class="widget-card widget-red">
+      <div class="w-header">
+        <h3 class="w-title">GASTOS OPERATIVOS</h3>
+        <span class="w-icon">📉</span>
+      </div>
+      <div class="w-body">
+        <div class="w-main-value">
+          <span class="w-label">Nómina, Arriendo, Servicios...</span>
+          <span class="w-amount">{{ data.expenses?.total | currencyCol }}</span>
+        </div>
+        <div class="w-breakdown">
+          <div class="w-row"><span>Utilidad Bruta:</span> <strong>{{ data.profit_and_loss?.gross_profit | currencyCol }}</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Utilidad Neta (P&G) -->
+    <div class="widget-card widget-green">
+      <div class="w-header">
+        <h3 class="w-title">UTILIDAD NETA (P&G)</h3>
+        <span class="w-icon">💰</span>
+      </div>
+      <div class="w-body">
+        <div class="w-main-value">
+          <span class="w-label">Beneficio Real</span>
+          <span class="w-amount">{{ data.profit_and_loss?.net_profit | currencyCol }}</span>
+        </div>
+        <div class="w-breakdown text-center mt-3">
+          <span class="status-badge" [class.badge-rose]="(data.profit_and_loss?.net_profit || 0) < 0"
+                                     [class.badge-emerald]="(data.profit_and_loss?.net_profit || 0) >= 0">
+            Margen: {{ data.profit_and_loss?.margin_percentage }}%
+          </span>
         </div>
       </div>
     </div>
@@ -58,12 +95,12 @@
       <div class="w-body">
         <div class="w-main-value">
           <span class="w-label">IVA por Pagar / (Favor)</span>
-          <span class="w-amount" style="font-size: 2.2rem;">{{ data.vat_balance.balance | currencyCol }}</span>
+          <span class="w-amount">{{ data.vat_balance.balance | currencyCol }}</span>
         </div>
         <div class="w-breakdown text-center mt-3">
           <span class="status-badge" [class.badge-rose]="data.vat_balance.status === 'por_pagar'"
-                              [class.badge-emerald]="data.vat_balance.status === 'a_favor'">
-            {{ data.vat_balance.status === 'por_pagar' ? '⚡ IMPUESTO POR PAGAR' : '✅ SALDO A FAVOR' }}
+                               [class.badge-emerald]="data.vat_balance.status === 'a_favor'">
+            {{ data.vat_balance.status === 'por_pagar' ? '⚡ POR PAGAR' : '✅ SALDO A FAVOR' }}
           </span>
         </div>
       </div>
